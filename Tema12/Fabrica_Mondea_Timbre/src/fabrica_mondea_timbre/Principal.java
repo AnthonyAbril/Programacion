@@ -21,6 +21,7 @@ public class Principal {
     private static ArrayList <Dinero> ListaDinero = new ArrayList<>();
     private static File ficherodinero;
     private static String RutaPorDefecto = "/home/alumnot/NetBeansProjects/Tema12/fabrica_mondea_timbre_ficheros/ficherodinero.ddr";
+    private static String ruta;
     //private static final File ficherodinero = new File("C:\\Users\\abril\\OneDrive\\Documentos\\JAVA\\NetBeans\\3Evaluacion\\Tema12\\fabrica_mondea_timbre_ficheros\\ficherodinero.ddr");
     
     public static void main(String[] args) {
@@ -55,11 +56,14 @@ public class Principal {
         if(opcion==1){//ruta por defecto
             ficherodinero = new File(RutaPorDefecto);
         }else{//ruta del usuario
-            System.out.print("Introduce la ruta: ");
-            ficherodinero = new File(sc.nextLine()+"/ficherodinero.ddr");
+            System.out.print("Introduce la ruta de la carpeta contenedora del fichero: ");
+            ruta = sc.nextLine()+"/ficherodinero.ddr";
+            ficherodinero = new File(ruta);
         }
         
-        //revisar si tienen informacion para preguntar si el usuario quiere usarla o no
+        if(ficherodinero.exists()){
+            System.out.println("a");
+        }
     }
     
     public static void titulo(String texto){
@@ -105,11 +109,11 @@ public class Principal {
                         OrdenarLista();
                         break;
                     case 6:
-                        if(ListaDinero.size()>0){
+                        if(ListaDinero.size()>0)
                             System.out.println(BuscarObjeto().toString()+"\n");
-                        }else{
+                        else
                             System.out.println("No hay objetos en la lista\n");
-                        }
+                            
                         break;
                     case 7:
                         ModificarDimension();
@@ -131,6 +135,27 @@ public class Principal {
         try{
             FileInputStream fis = new FileInputStream(archivo);
             ObjectInputStream ois = new ObjectInputStream(fis);
+            
+            //revisar si tienen informacion para preguntar si el usuario quiere usarla o no
+            if(ficherodinero.exists()&&ficherodinero.length()>0){//si ya existe un fichero ahi y tiene contenido
+
+                int opcion=0;
+                do{
+                    System.out.print("ya hay un fichero con contenido en la ruta indicada"
+                            + "\n\t1-usar la informacion fichero"
+                            + "\n\t2-crear un nuevo fichero"
+                            + "\n>Elige una opcion: ");
+                    opcion = sc.nextInt();
+                }while(opcion!=1&&opcion!=2);
+
+                if(opcion==1){//usar la informacion fichero
+
+                }else{//crear un nuevo fichero
+                    ficherodinero.createNewFile();
+                }
+            }else{//crear un fichero nuevo
+                ficherodinero.createNewFile();
+            }
             
             while(true){
                 ListaDinero=(ArrayList <Dinero>)ois.readObject();
@@ -217,7 +242,7 @@ public class Principal {
     
     public static void CopiarObjetos(){
         
-        if(ListaDinero.size()>0){
+        if(!ListaDinero.isEmpty()){
             Dinero D = BuscarObjeto();
             if(D instanceof Moneda){
                 ListaDinero.add(new Moneda((Moneda)D));
@@ -242,7 +267,7 @@ public class Principal {
     }
     
     public static void ComprobarIguales(){
-        if(ListaDinero.size()>0){
+        if(!ListaDinero.isEmpty()){
 
             titulo("LISTA DE OBJETOS REPETIDOS");    //usar arraylist en la que se guarden los numeros de la posicion en la que se encuentran las repetidas y se repase despues para no repetirse
 
@@ -277,7 +302,7 @@ public class Principal {
     }
     
     public static void OrdenarLista(){
-        if(ListaDinero.size()>0){
+        if(!ListaDinero.isEmpty()){
             Collections.sort(ListaDinero, new Comparator<Dinero>(){
             @Override
             public int compare(Dinero e1, Dinero e2) {
@@ -305,7 +330,7 @@ public class Principal {
     }
     
     public static void ModificarDimension(){
-        if(ListaDinero.size()>0){
+        if(!ListaDinero.isEmpty()){
             Dinero D = BuscarObjeto();
 
             if(D instanceof Moneda){//si es una moneda
