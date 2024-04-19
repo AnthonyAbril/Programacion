@@ -22,7 +22,7 @@ public class Principal {
     private static File ficherodinero;
     private static String RutaPorDefecto = "/home/alumnot/NetBeansProjects/Tema12/fabrica_mondea_timbre_ficheros/ficherodinero.ddr";
     //private static final File ficherodinero = new File("C:\\Users\\abril\\OneDrive\\Documentos\\JAVA\\NetBeans\\3Evaluacion\\Tema12\\fabrica_mondea_timbre_ficheros\\ficherodinero.ddr");
-    //comentario de prueba
+    
     public static void main(String[] args) {
         //arreglar que al poner texto no salga de la funcion, sino que siga preguntandolo
         //arreglar que se pueda poner enteros negativos
