@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<ClassDiagram name="salondevideojuegos">
+  <ClassDiagramComponents>
+    <Class name="Test" package="salondevideojuegos" visibility="public" xPosition="262.0" yPosition="140.0">
+      <Fields/>
+      <Constructors/>
+      <Methods>
+        <Method name="main" returnType="void" visibility="public" isStatic="true">
+          <Argument type="String[]" name="args"/>
+        </Method>
+        <Method name="presentacion" returnType="void" visibility="public" isStatic="true">
+          <Argument type="String" name="s"/>
+        </Method>
+      </Methods>
+    </Class>
+    <Class name="JuegoEnAlquiler" package="salondevideojuegos" visibility="public" xPosition="568.0" yPosition="556.0">
+      <Fields>
+        <Field name="ndiasalquila" type="int" visibility="package"/>
+      </Fields>
+      <Constructors>
+        <Constructor visibility="public"/>
+        <Constructor visibility="public">
+          <Argument type="String" name="t"/>
+          <Argument type="String" name="f"/>
+          <Argument type="int" name="a"/>
+          <Argument type="double" name="p"/>
+          <Argument type="int" name="nc"/>
+          <Argument type="int" name="ndias"/>
+        </Constructor>
+        <Constructor visibility="public">
+          <Argument type="JuegoEnAlquiler" name="JeA"/>
+        </Constructor>
+      </Constructors>
+      <Methods>
+        <Method name="alquilar" returnType="void" visibility="public"/>
+        <Method name="devolver" returnType="void" visibility="public"/>
+        <Method name="precioFinal" returnType="double" visibility="public"/>
+        <Method name="toString" returnType="String" visibility="public"/>
+      </Methods>
+    </Class>
+    <Class name="JuegoEnVenta" package="salondevideojuegos" visibility="public" xPosition="1183.0" yPosition="573.0">
+      <Fields/>
+      <Constructors>
+        <Constructor visibility="public"/>
+        <Constructor visibility="public">
+          <Argument type="String" name="t"/>
+          <Argument type="String" name="f"/>
+          <Argument type="int" name="a"/>
+          <Argument type="double" name="p"/>
+          <Argument type="int" name="nc"/>
+        </Constructor>
+      </Constructors>
+      <Methods>
+        <Method name="vender" returnType="void" visibility="public"/>
+      </Methods>
+    </Class>
+    <Class name="Juego" package="salondevideojuegos" visibility="public" isAbstract="true" xPosition="924.0" yPosition="31.0">
+      <Fields>
+        <Field name="titulo" type="String" visibility="package"/>
+        <Field name="anyo" type="int" visibility="package"/>
+        <Field name="ntotal" type="int" visibility="package" isStatic="true"/>
+        <Field name="precio" type="double" visibility="package"/>
+        <Field name="ncopiasdisp" type="int" visibility="package"/>
+      </Fields>
+      <Constructors>
+        <Constructor visibility="public"/>
+        <Constructor visibility="public">
+          <Argument type="String" name="t"/>
+          <Argument type="String" name="f"/>
+          <Argument type="int" name="a"/>
+          <Argument type="double" name="p"/>
+          <Argument type="int" name="nc"/>
+        </Constructor>
+      </Constructors>
+      <Methods>
+        <Method name="getTitulo" returnType="String" visibility="public"/>
+        <Method name="getFabricante" returnType="String" visibility="public"/>
+        <Method name="getAnyo" returnType="int" visibility="public"/>
+        <Method name="getNtotal" returnType="int" visibility="public"/>
+        <Method name="setTitulo" returnType="void" visibility="public">
+          <Argument type="String" name="titulo"/>
+        </Method>
+        <Method name="setFabricante" returnType="void" visibility="public">
+          <Argument type="String" name="fabricante"/>
+        </Method>
+        <Method name="setAnyo" returnType="void" visibility="public">
+          <Argument type="int" name="anyo"/>
+        </Method>
+        <Method name="comprobarAnyo" returnType="boolean" visibility="private" isFinal="true">
+          <Argument type="int" name="a"/>
+        </Method>
+        <Method name="toString" returnType="String" visibility="public"/>
+        <Method name="equals" returnType="boolean" visibility="public">
+          <Argument type="Juego" name="j"/>
+        </Method>
+        <Method name="compareTo" returnType="int" visibility="public">
+          <Argument type="Juego" name="j"/>
+        </Method>
+      </Methods>
+    </Class>
+    <Interface name="Alquilable" package="salondevideojuegos" visibility="public" xPosition="505.0" yPosition="313.0">
+      <Methods>
+        <Method name="alquilar" returnType="void" visibility="public"/>
+        <Method name="devolver" returnType="void" visibility="public"/>
+        <Method name="precioFinal" returnType="double" visibility="public"/>
+      </Methods>
+    </Interface>
+  </ClassDiagramComponents>
+  <ClassDiagramRelations>
+    <IsRelation name="is" source="salondevideojuegos.JuegoEnAlquiler" target="salondevideojuegos.Juego"/>
+    <ImplementsRelation name="&lt;&lt;implements&gt;&gt;" source="salondevideojuegos.JuegoEnAlquiler" target="salondevideojuegos.Alquilable"/>
+    <IsRelation name="is" source="salondevideojuegos.JuegoEnVenta" target="salondevideojuegos.Juego"/>
+    <UseRelation source="salondevideojuegos.Juego" target="salondevideojuegos.Juego" sourceCardinality="1..1" targetCardinality="1..1"/>
+  </ClassDiagramRelations>
+</ClassDiagram>
