@@ -42,7 +42,9 @@ public class Principal {
                     + "\n\t6- Gestión de empleados/as de la biblioteca"
                     + "\n\t7- Gestión de usuarios/as de la biblioteca"
                     + "\n\t8- Salir del sistema."
-                    + ">Elige una opcion: ");
+                    + "\n>Elige una opcion: ");
+            opcion = sc.nextInt();
+            sc.nextLine();
             
             switch (opcion) {
                 case 1:
