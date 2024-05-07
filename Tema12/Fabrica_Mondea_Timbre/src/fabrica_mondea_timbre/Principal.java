@@ -20,7 +20,7 @@ public class Principal {
     private static final Scanner sc = new Scanner(System.in);
     private static ArrayList <Dinero> ListaDinero = new ArrayList<>();
     private static File ficherodinero;
-    private static String RutaPorDefecto = "/home/alumnot/NetBeansProjects/Tema12/fabrica_mondea_timbre_ficheros/ficherodinero.ddr";
+    private static String RutaPorDefecto = "/home/alumnot/NetBeansProjects/Programacion/Tema12/fabrica_mondea_timbre_ficheros";
     private static String ruta;
     //private static final File ficherodinero = new File("C:\\Users\\abril\\OneDrive\\Documentos\\JAVA\\NetBeans\\3Evaluacion\\Tema12\\fabrica_mondea_timbre_ficheros\\ficherodinero.ddr");
     
@@ -43,27 +43,41 @@ public class Principal {
         }
     }
     
-    public static void PreguntarRuta(){
-        int opcion=0;
+    public static int eligeopcion(int min, int max, String texto){
+        int opcion = 0;
         do{
-            System.out.print("Elige una ruta"
-                    + "\n\t1-ruta por defecto"
-                    + "\n\t2-escribir una ruta"
-                    + "\n>Elige una opcion: ");
-            opcion = sc.nextInt();
-        }while(opcion!=1&&opcion!=2);
+            try{
+                System.out.print(texto);
+                opcion = sc.nextInt();
+                if(opcion<min || opcion >max){
+                    System.out.println(" [ OPCION NO DISPONIBLE ] ");
+                }
+            }catch(java.util.InputMismatchException ex){
+                System.out.println(" [ ESCRIBE UN ENTERO ] ");
+                sc.nextLine();
+            }
+        }while(opcion<min || opcion >max);
+        return opcion;
+    }
+    
+    public static void PreguntarRuta(){
+        System.out.print("Elige una ruta"
+                + "\n\t1-ruta por defecto"
+                + "\n\t2-escribir una ruta");
+        int opcion = eligeopcion(1,2,"\n>Elige una opcion: ");
+        
+        sc.nextLine();
         
         if(opcion==1){//ruta por defecto
-            ficherodinero = new File(RutaPorDefecto);
+            ruta = RutaPorDefecto;
         }else{//ruta del usuario
             System.out.print("Introduce la ruta de la carpeta contenedora del fichero: ");
-            ruta = sc.nextLine()+"/ficherodinero.ddr";
-            ficherodinero = new File(ruta);
+            ruta = sc.nextLine();
         }
         
-        if(ficherodinero.exists()){
-            System.out.println("a");
-        }
+        ficherodinero = new File(ruta);
+        ficherodinero.mkdirs();
+        ficherodinero = new File(ruta+"/ficherodinero.ddr");
     }
     
     public static void titulo(String texto){
@@ -87,10 +101,8 @@ public class Principal {
                         + "\n\t6-Buscar objetos"//hecho
                         + "\n\t7-Modificar los atributos de dimensión de un objeto"//hecho
                         + "\n\t8-Eliminar objetos"//hecho
-                        + "\n\t9-Salir"
-                        + "\n>Elige opcion: ");
-                op=sc.nextInt();
-                sc.nextLine();
+                        + "\n\t9-Salir");
+                op=eligeopcion(1,9,"\n>Elige opcion: ");
 
                 switch (op) {
                     case 1:
@@ -139,27 +151,18 @@ public class Principal {
             //revisar si tienen informacion para preguntar si el usuario quiere usarla o no
             if(ficherodinero.exists()&&ficherodinero.length()>0){//si ya existe un fichero ahi y tiene contenido
 
-                int opcion=0;
-                do{
-                    System.out.print("ya hay un fichero con contenido en la ruta indicada"
-                            + "\n\t1-usar la informacion fichero"
-                            + "\n\t2-crear un nuevo fichero"
-                            + "\n>Elige una opcion: ");
-                    opcion = sc.nextInt();
-                }while(opcion!=1&&opcion!=2);
+                System.out.print("ya hay un fichero con contenido en la ruta indicada"
+                        + "\n\t1-usar la informacion fichero"
+                        + "\n\t2-crear un nuevo fichero");
+                int opcion = eligeopcion(1,2,"\n>Elige una opcion: ");;
 
-                if(opcion==1){//usar la informacion fichero
-
-                }else{//crear un nuevo fichero
-                    ficherodinero.createNewFile();
+                if(opcion==1){//lee la informacion fichero
+                    while(true){
+                        ListaDinero=(ArrayList <Dinero>)ois.readObject();
+                    }
                 }
-            }else{//crear un fichero nuevo
-                ficherodinero.createNewFile();
             }
             
-            while(true){
-                ListaDinero=(ArrayList <Dinero>)ois.readObject();
-            }
         }catch(IOException ex){
             System.out.println(" - - Datos cargados - - ");
         }
@@ -186,6 +189,8 @@ public class Principal {
             }
             
             System.out.println("\n - - Datos guardados - - ");
+            System.out.println("Se han guardado en: "+archivo);
+            
         }catch(IOException ex){
             System.out.println("Error al guardar los datos");
         }
@@ -194,14 +199,11 @@ public class Principal {
     public static void CrearObjetos(){
         titulo("CREACIÓN DE UN OBJETO");
         int opcion = 0;
-        do{
-            System.out.print("Elige que quieres crear"
-                    + "\n\t1-crear una moneda"
-                    + "\n\t2-crear un billete"
-                    + "\n>Introduce que quieres crear: ");
-            
-            opcion = sc.nextInt();
-        }while(opcion!=1&&opcion!=2);
+        System.out.print("Elige que quieres crear"
+                + "\n\t1-crear una moneda"
+                + "\n\t2-crear un billete");
+
+        opcion = eligeopcion(1,2,"\n>Introduce que quieres crear: ");
         
         //valores comunes
         sc.nextLine();
