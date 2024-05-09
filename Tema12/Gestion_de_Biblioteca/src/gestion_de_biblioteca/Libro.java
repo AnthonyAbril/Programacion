@@ -31,6 +31,43 @@ public class Libro {
         this.bibliotecario = bibliotecario;
         this.usuario = usuario;
     }
+
+    @Override
+    public String toString() {
+        return "\tt\u00edtulo=" + título + "\n\tautor=" + autor + "\n\teditorial=" + editorial + "\n\tprestado=" + prestado + "\n\tISBN=" + ISBN + "\n\tpasillo=" + pasillo + "\n\tprecio=" + precio + "\n\tbibliotecario=" + bibliotecario + "\n\tusuario=" + usuario;
+    }
+
+    public boolean isPrestado() {
+        return prestado;
+    }
+
+    public String getBibliotecario() {
+        return bibliotecario;
+    }
+
+    public String getUsuario() {
+        return usuario;
+    }
+
+    public String getTítulo() {
+        return título;
+    }
+
+    public String getAutor() {
+        return autor;
+    }
+
+    public String getEditorial() {
+        return editorial;
+    }
+
+    public String getISBN() {
+        return ISBN;
+    }
+
+    public int getPasillo() {
+        return pasillo;
+    }
     
     //constructor para un libro sin prestar
     public Libro(String título, String autor, String editorial, String ISBN, int pasillo, Double precio) {

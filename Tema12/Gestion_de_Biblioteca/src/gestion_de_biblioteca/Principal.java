@@ -6,6 +6,58 @@ import java.util.Scanner;
 
 public class Principal {
     static Scanner sc = new Scanner(System.in);
+    
+    public static double solodouble(String texto){
+        boolean isnumeric=false;
+        double numero=0;
+        do{
+            try{
+                System.out.print(texto);
+                numero = sc.nextDouble();
+                if(numero<=0){
+                    System.out.println(" [ EL VALOR TIENE QUE SER POSITIVO ] ");
+                }else{
+                    isnumeric=true;
+                }
+                
+            }catch(java.util.InputMismatchException  ex){
+                System.out.println(" [ EL VALOR DEBE SER UN NUMERO DECIMAL ] ");
+                sc.nextLine();
+            }
+        }while(isnumeric==false);
+        return numero;
+    }
+    
+    public static int solonumero(String texto){
+        boolean isnumeric=false;
+        int numero=0;
+        do{
+            try{
+                System.out.print(texto);
+                numero = sc.nextInt();
+                if(numero<=0){
+                    System.out.println(" [ EL VALOR TIENE QUE SER POSITIVO ] ");
+                }else{
+                    isnumeric=true;
+                }
+            }catch(java.util.InputMismatchException  ex){
+                System.out.println(" [ EL VALOR DEBE SER UN NUMERO ENTERO ] ");
+                sc.nextLine();
+            }
+        }while(isnumeric==false);
+        return numero;
+    }
+    
+    public static int eligeopcion(int min, int max, String texto){
+        int opcion = 0;
+        do{
+            opcion = solonumero(texto);
+            if(opcion<min || opcion >max){
+                System.out.println(" [ OPCION NO DISPONIBLE ] ");
+            }
+        }while(opcion<min || opcion >max);
+        return opcion;
+    }
 
     //- Colección empleados/as de la biblioteca: esta colección estará precargada por programa e
     //incluirá las siguientes personas: Alberto, Encarna, Estela, Manolo, Agustín. En la opción
@@ -23,6 +75,11 @@ public class Principal {
 
     public static void main(String[] args) {
         if(true){
+            libros.add(new Libro("Arsene Lupin","Maurice Leblanc","Anaya","1234567890",3,14.99d));
+            libros.add(new Libro("Arsene Lupin","Maurice Leblanc","Anaya","1234567890",3,14.99d));
+        }
+        
+        if(true){
             Empleados.add(new Empleado());
         }
         
@@ -34,7 +91,7 @@ public class Principal {
         
         do{
             System.out.print("------ Menu --------------------------"
-                    + "\n\t1- Dar de alta un libro en el sistema"
+                    + "\n\t1- Dar de alta un libro en el sistema"   //base  hecha
                     + "\n\t2- Búsqueda de libros dentro del sistema"
                     + "\n\t3- Dar de baja un libro en el sistema"
                     + "\n\t4- Alquiler de un libro por un usuario"
@@ -60,6 +117,7 @@ public class Principal {
                 case 5:
                     break;
                 default:
+                    System.out.println("\n [ ELIGE UNA OPCION DEL MENU ]\n");
                     break;
             }
         }while(opcion!=8);
@@ -77,15 +135,51 @@ public class Principal {
         String editorial = sc.nextLine();
         System.out.print(">Introduce el ISBN del libro: ");
         String ISBN = sc.nextLine();
-        System.out.print(">Introduce la ubicación del libro (numero del pasillo): ");
-        int pasillo = sc.nextInt();
-        System.out.print(">Introduce el precio del libro: ");
-        Double precio = sc.nextDouble();
+        int pasillo = solonumero(">Introduce la ubicación del libro (numero del pasillo): ");
+        Double precio = solodouble(">Introduce el precio del libro: ");
         
         libros.add(new Libro(titulo,autor,editorial,ISBN,pasillo,precio));
     }
     
     public static void BuscarLibro(){
-        
+        if(!libros.isEmpty()){
+            System.out.println("Busqueda de libros"
+                    + "\n\t1-Titulo"
+                    + "\n\t2-Autor"
+                    + "\n\t3-Editorial"
+                    + "\n\t4-Ubicacion"
+                    + "\n\t5-ISBN"
+                    + "\n\t6-Nombre empleado biblioteca que lo ha prestado"
+                    + "\n\t7-Estado préstamos (búsqueda de libros prestados y no prestados)"
+                    + "\n\t8-Nombre usuario biblioteca que lo ha alquilado");
+            int opcion=eligeopcion(1,8,">Elige un metodo de busqueda: ");
+            sc.nextLine();
+            System.out.print(">Palabra que se busca: ");
+            String Pista = sc.nextLine();
+            
+            for(int a=0;a<libros.size();a++){
+                boolean encontrado=false;
+                
+                switch (opcion) {
+                    case 1://titulo
+                        encontrado=libros.get(a).getTítulo().toLowerCase().contains(Pista.toLowerCase());
+                        break;
+                    case 2://autor
+                        encontrado=libros.get(a).getAutor().toLowerCase().contains(Pista.toLowerCase());
+                        break;
+                    case 3://editorial
+                        encontrado=libros.get(a).getEditorial().toLowerCase().contains(Pista.toLowerCase());
+                        break;
+                    case 4:
+                        break;
+                    default:
+                        break;
+                }
+                
+                if(encontrado){
+                    System.out.println("\n     [ Libro nº"+(a+1)+" ]\n"+libros.get(a).toString());
+                }
+            }
+        }
     }
 }
