@@ -20,7 +20,7 @@ public class Principal {
     private static final Scanner sc = new Scanner(System.in);
     private static ArrayList <Dinero> ListaDinero = new ArrayList<>();
     private static File ficherodinero;
-    private static String RutaPorDefecto = "/home/alumnot/NetBeansProjects/Programacion/Tema12/fabrica_mondea_timbre_ficheros";
+    private static final String RutaPorDefecto = "/home/alumnot/NetBeansProjects/Programacion/Tema12/fabrica_mondea_timbre_ficheros";
     private static String ruta;
     //private static final File ficherodinero = new File("C:\\Users\\abril\\OneDrive\\Documentos\\JAVA\\NetBeans\\3Evaluacion\\Tema12\\fabrica_mondea_timbre_ficheros\\ficherodinero.ddr");
     
@@ -43,18 +43,53 @@ public class Principal {
         }
     }
     
-    public static int eligeopcion(int min, int max, String texto){
-        int opcion = 0;
+    public static double solodouble(String texto){
+        boolean isnumeric=false;
+        double numero=0;
         do{
             try{
                 System.out.print(texto);
-                opcion = sc.nextInt();
-                if(opcion<min || opcion >max){
-                    System.out.println(" [ OPCION NO DISPONIBLE ] ");
+                numero = sc.nextDouble();
+                if(numero<=0){
+                    System.out.println(" [ EL VALOR TIENE QUE SER POSITIVO ] ");
+                }else{
+                    isnumeric=true;
                 }
-            }catch(java.util.InputMismatchException ex){
-                System.out.println(" [ ESCRIBE UN ENTERO ] ");
+                
+            }catch(java.util.InputMismatchException  ex){
+                System.out.println(" [ EL VALOR DEBE SER UN NUMERO DECIMAL ] ");
                 sc.nextLine();
+            }
+        }while(isnumeric==false);
+        return numero;
+    }
+    
+    public static int solonumero(String texto){
+        boolean isnumeric=false;
+        int numero=0;
+        do{
+            try{
+                System.out.print(texto);
+                numero = sc.nextInt();
+                if(numero<=0){
+                    System.out.println(" [ EL VALOR TIENE QUE SER POSITIVO ] ");
+                }else{
+                    isnumeric=true;
+                }
+            }catch(java.util.InputMismatchException  ex){
+                System.out.println(" [ EL VALOR DEBE SER UN NUMERO ENTERO ] ");
+                sc.nextLine();
+            }
+        }while(isnumeric==false);
+        return numero;
+    }
+    
+    public static int eligeopcion(int min, int max, String texto){
+        int opcion = 0;
+        do{
+            opcion = solonumero(texto);
+            if(opcion<min || opcion >max){
+                System.out.println(" [ OPCION NO DISPONIBLE ] ");
             }
         }while(opcion<min || opcion >max);
         return opcion;
@@ -169,30 +204,37 @@ public class Principal {
     }
     
     public static void GuardarListaEmpleados(File archivo){
-        try{
-            if(archivo.exists()){
-                FileOutputStream fos = new FileOutputStream(archivo,true);
-                MiObjectOutputStream moos = new MiObjectOutputStream(fos);
-                
-                moos.writeObject(ListaDinero);
-                
-                fos.close();
-                moos.close();
-            }else{
-                FileOutputStream fos = new FileOutputStream(archivo);
-                ObjectOutputStream oos = new ObjectOutputStream(fos);
-                
-                oos.writeObject(ListaDinero);
-                
-                fos.close();
-                oos.close();
+        System.out.println("Quieres guardar?"
+                + "\n\t1-Si"
+                + "\n\t2-No");
+        if(eligeopcion(1,2,">Elige una opcion: ")==1){
+            try{
+                if(archivo.exists()){
+                    FileOutputStream fos = new FileOutputStream(archivo,true);
+                    MiObjectOutputStream moos = new MiObjectOutputStream(fos);
+
+                    moos.writeObject(ListaDinero);
+
+                    fos.close();
+                    moos.close();
+                }else{
+                    FileOutputStream fos = new FileOutputStream(archivo);
+                    ObjectOutputStream oos = new ObjectOutputStream(fos);
+
+                    oos.writeObject(ListaDinero);
+
+                    fos.close();
+                    oos.close();
+                }
+
+                System.out.println("\n - - Datos guardados - - ");
+                System.out.println("Se han guardado en: "+archivo);
+
+            }catch(IOException ex){
+                System.out.println("Error al guardar los datos");
             }
-            
-            System.out.println("\n - - Datos guardados - - ");
-            System.out.println("Se han guardado en: "+archivo);
-            
-        }catch(IOException ex){
-            System.out.println("Error al guardar los datos");
+        }else{
+            System.out.println("Programa finalizado sin guardar");
         }
     }
     
@@ -207,23 +249,17 @@ public class Principal {
         
         //valores comunes
         sc.nextLine();
-        System.out.print(">Introduce el valor: ");
-        Double valor = sc.nextDouble();
-        System.out.print(">Introduce el año de emision: ");
-        int año = sc.nextInt();
+        Double valor = solodouble(">Introduce el valor: ");
+        int año = solonumero(">Introduce el año de emision: ");
         
         if(opcion==1){//valores de moneda
-            System.out.print(">Introduce el diametro: ");
-            Double diametro = sc.nextDouble();
-            System.out.print(">Introduce el peso: ");
-            Double peso = sc.nextDouble();
+            Double diametro = solodouble(">Introduce el diametro: ");
+            Double peso = solodouble(">Introduce el peso: ");
         
             ListaDinero.add(new Moneda(valor,año,diametro,peso));
         }else if(opcion==2){//valores de billete
-            System.out.print(">Introduce la altura: ");
-            Double altura = sc.nextDouble();
-            System.out.print(">Introduce la anchura: ");
-            Double anchura = sc.nextDouble();
+            Double altura = solodouble(">Introduce la altura: ");
+            Double anchura = solodouble(">Introduce la anchura: ");
             
             ListaDinero.add(new Billete(valor,año,altura,anchura));
         }
@@ -235,9 +271,8 @@ public class Principal {
         do{
             if(v==false)
                 System.out.println(" [ POSICION FUERA DE LA LISTA ] ");
-            System.out.print(">Pon la posicion del objeto en la lista: ");
             v=false;
-            posicion = sc.nextInt()-1;
+            posicion = solonumero(">Pon la posicion del objeto en la lista: ")-1;
         }while(posicion<0||posicion>ListaDinero.size()-1);
         return ListaDinero.get(posicion);
     }
@@ -258,7 +293,7 @@ public class Principal {
     }
     
     public static void MostrarObjetos(){
-        if(ListaDinero.size()>0){
+        if(!ListaDinero.isEmpty()){
             titulo("LISTA DE TODOS LOS OBJETOS");
             for(int a=0;a<ListaDinero.size();a++){
                 System.out.println("["+(a+1)+"] "+ListaDinero.get(a)+"\n");
@@ -318,31 +353,18 @@ public class Principal {
         }
     }
     
-    public static double DoblePositivo(String texto){
-        Double valor=0d;
-        do{
-            System.out.print(texto);
-            valor = sc.nextDouble();
-            if(valor<=0){
-                System.out.println(" [ EL VALOR TIENE QUE SER POSITIVO ] ");
-            }
-        }while(valor<=0);
-        
-        return valor;
-    }
-    
     public static void ModificarDimension(){
         if(!ListaDinero.isEmpty()){
             Dinero D = BuscarObjeto();
 
             if(D instanceof Moneda){//si es una moneda
-                double Diametro = DoblePositivo(">Introduce el nuevo valor de su diametro: ");
+                double Diametro = solodouble(">Introduce el nuevo valor de su diametro: ");
                 ((Moneda) D).setDiametro(Diametro);
             }
             else if(D instanceof Billete){//si es un billete
-                double Altura = DoblePositivo(">Introduce el nuevo valor de su altura");
+                double Altura = solodouble(">Introduce el nuevo valor de su altura");
                 ((Billete) D).setAltura(Altura);
-                double Anchura = DoblePositivo(">Introduce el nuevo valor de su anchura");
+                double Anchura = solodouble(">Introduce el nuevo valor de su anchura");
                 ((Billete) D).setAnchura(Anchura);
             }
         }else{
