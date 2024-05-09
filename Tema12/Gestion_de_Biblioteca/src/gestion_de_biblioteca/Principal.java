@@ -76,7 +76,7 @@ public class Principal {
     public static void main(String[] args) {
         if(true){
             libros.add(new Libro("Arsene Lupin","Maurice Leblanc","Anaya","1234567890",3,14.99d));
-            libros.add(new Libro("Arsene Lupin","Maurice Leblanc","Anaya","1234567890",3,14.99d));
+            libros.add(new Libro("DEMON SLAYER: KIMETSU NO YAIBA, VOLUMEN 2: 2","KOYOHARU GOTOUGE","Shonen Jump Manga","9781974700530",2    ,10.61d));
         }
         
         if(true){
@@ -105,12 +105,13 @@ public class Principal {
             
             switch (opcion) {
                 case 1:
-                    AltaLibro();
+                    AltaLibro();//hecho
                     break;
                 case 2:
-                    BuscarLibro();
+                    BuscarLibro();//hecho
                     break;
                 case 3:
+                    BajaLibro();
                     break;
                 case 4:
                     break;
@@ -121,6 +122,18 @@ public class Principal {
                     break;
             }
         }while(opcion!=8);
+    }
+    
+    public static Libro BuscarObjeto(){
+        int posicion;
+        boolean v=true;
+        do{
+            if(v==false)
+                System.out.println(" [ POSICION FUERA DE LA LISTA ] ");
+            v=false;
+            posicion = solonumero(">Pon la posicion del objeto en la lista: ")-1;
+        }while(posicion<0||posicion>libros.size()-1);
+        return libros.get(posicion);
     }
     
     public static void AltaLibro(){
@@ -149,32 +162,45 @@ public class Principal {
                     + "\n\t3-Editorial"
                     + "\n\t4-Ubicacion"
                     + "\n\t5-ISBN"
-                    + "\n\t6-Nombre empleado biblioteca que lo ha prestado"
+                    + "\n\t6-Nombre del bibliotecario que lo ha prestado"
                     + "\n\t7-Estado préstamos (búsqueda de libros prestados y no prestados)"
-                    + "\n\t8-Nombre usuario biblioteca que lo ha alquilado");
+                    + "\n\t8-Nombre del usuario que lo ha alquilado");
             int opcion=eligeopcion(1,8,">Elige un metodo de busqueda: ");
             sc.nextLine();
-            System.out.print(">Palabra que se busca: ");
-            String Pista = sc.nextLine();
+            String Pista="";
+            int p=0;
+            if(opcion==7)
+                p=eligeopcion(1,2,"\nQue quieres buscar"
+                        + "\n\t1-prestados"
+                        + "\n\t2-no prestados"
+                        + "\n>Elige una opcion: ");
+            else{
+                System.out.print(">Palabra que se busca: ");
+                Pista = sc.nextLine();
+            }
             
             for(int a=0;a<libros.size();a++){
                 boolean encontrado=false;
                 
-                switch (opcion) {
-                    case 1://titulo
-                        encontrado=libros.get(a).getTítulo().toLowerCase().contains(Pista.toLowerCase());
-                        break;
-                    case 2://autor
-                        encontrado=libros.get(a).getAutor().toLowerCase().contains(Pista.toLowerCase());
-                        break;
-                    case 3://editorial
-                        encontrado=libros.get(a).getEditorial().toLowerCase().contains(Pista.toLowerCase());
-                        break;
-                    case 4:
-                        break;
-                    default:
-                        break;
-                }
+                if(opcion==1)//titulo
+                    encontrado=libros.get(a).getTítulo().toLowerCase().contains(Pista.toLowerCase());
+                if(opcion==2)//autor
+                    encontrado=libros.get(a).getAutor().toLowerCase().contains(Pista.toLowerCase());
+                if(opcion==3)//editorial
+                    encontrado=libros.get(a).getEditorial().toLowerCase().contains(Pista.toLowerCase());
+                if(opcion==4)//ubicacion
+                    encontrado=(libros.get(a).getPasillo()+"").toLowerCase().contains(Pista.toLowerCase());
+                if(opcion==5)//ISBN
+                    encontrado=libros.get(a).getISBN().toLowerCase().contains(Pista.toLowerCase());
+                if(opcion==6)//bibliotecario
+                    encontrado=libros.get(a).getBibliotecario().toLowerCase().contains(Pista.toLowerCase());
+                if(opcion==7)//prestado o no
+                    if(p==1)
+                        encontrado=!libros.get(a).isPrestado();
+                    else
+                        encontrado=libros.get(a).isPrestado();
+                if(opcion==8)//usuario
+                    encontrado=libros.get(a).getUsuario().toLowerCase().contains(Pista.toLowerCase());
                 
                 if(encontrado){
                     System.out.println("\n     [ Libro nº"+(a+1)+" ]\n"+libros.get(a).toString());
@@ -182,4 +208,17 @@ public class Principal {
             }
         }
     }
+    
+    public static void BajaLibro(){
+        if(libros.isEmpty()){
+            System.out.println("No hay objetos en la lista\n");
+        }else{
+            Libro l = BuscarObjeto();
+            System.out.println("\n"+l.toString());
+            libros.remove(l);
+            System.out.println("- - Objeto Eliminado - -\n");
+        }
+    }
+    
+    
 }
