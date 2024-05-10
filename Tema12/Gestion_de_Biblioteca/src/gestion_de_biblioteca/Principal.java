@@ -76,6 +76,8 @@ public class Principal {
     public static void main(String[] args) {
         if(true){
             libros.add(new Libro("Arsene Lupin","Maurice Leblanc","Anaya","1234567890",3,14.99d));
+            libros.add(new Libro("Arsene Lupin","Maurice Leblanc","Anaya","12434567890",3,14.99d));
+            libros.add(new Libro("Caballero Ladron","Maurice Leblanc","Anaya","12345657890",3,14.99d));
             libros.add(new Libro("DEMON SLAYER: KIMETSU NO YAIBA, VOLUMEN 2: 2","KOYOHARU GOTOUGE","Shonen Jump Manga","9781974700530",2    ,10.61d));
         }
         
@@ -92,8 +94,8 @@ public class Principal {
         do{
             System.out.print("------ Menu --------------------------"
                     + "\n\t1- Dar de alta un libro en el sistema"   //base  hecha
-                    + "\n\t2- Búsqueda de libros dentro del sistema"
-                    + "\n\t3- Dar de baja un libro en el sistema"
+                    + "\n\t2- Búsqueda de libros dentro del sistema"   //base  hecha
+                    + "\n\t3- Dar de baja un libro en el sistema"   //base  hecha
                     + "\n\t4- Alquiler de un libro por un usuario"
                     + "\n\t5- Devolución de un libro por un usuario"
                     + "\n\t6- Gestión de empleados/as de la biblioteca"
@@ -108,12 +110,13 @@ public class Principal {
                     AltaLibro();//hecho
                     break;
                 case 2:
-                    BuscarLibro();//hecho
+                    BuscarLibro(false);//hecho
                     break;
                 case 3:
                     BajaLibro();
                     break;
                 case 4:
+                    AlquilarLibro();
                     break;
                 case 5:
                     break;
@@ -154,7 +157,7 @@ public class Principal {
         libros.add(new Libro(titulo,autor,editorial,ISBN,pasillo,precio));
     }
     
-    public static void BuscarLibro(){
+    public static Libro BuscarLibro(boolean elegir){
         if(!libros.isEmpty()){
             System.out.println("Busqueda de libros"
                     + "\n\t1-Titulo"
@@ -178,47 +181,122 @@ public class Principal {
                 System.out.print(">Palabra que se busca: ");
                 Pista = sc.nextLine();
             }
-            
+            Libro elegido = null;
+            int contador=0;
             for(int a=0;a<libros.size();a++){
                 boolean encontrado=false;
+                elegido = libros.get(a);
                 
                 if(opcion==1)//titulo
-                    encontrado=libros.get(a).getTítulo().toLowerCase().contains(Pista.toLowerCase());
+                    encontrado=elegido.getTítulo().toLowerCase().contains(Pista.toLowerCase());
                 if(opcion==2)//autor
-                    encontrado=libros.get(a).getAutor().toLowerCase().contains(Pista.toLowerCase());
+                    encontrado=elegido.getAutor().toLowerCase().contains(Pista.toLowerCase());
                 if(opcion==3)//editorial
-                    encontrado=libros.get(a).getEditorial().toLowerCase().contains(Pista.toLowerCase());
+                    encontrado=elegido.getEditorial().toLowerCase().contains(Pista.toLowerCase());
                 if(opcion==4)//ubicacion
-                    encontrado=(libros.get(a).getPasillo()+"").toLowerCase().contains(Pista.toLowerCase());
+                    encontrado=(elegido.getPasillo()+"").toLowerCase().contains(Pista.toLowerCase());
                 if(opcion==5)//ISBN
-                    encontrado=libros.get(a).getISBN().toLowerCase().contains(Pista.toLowerCase());
+                    encontrado=elegido.getISBN().toLowerCase().contains(Pista.toLowerCase());
                 if(opcion==6)//bibliotecario
-                    encontrado=libros.get(a).getBibliotecario().toLowerCase().contains(Pista.toLowerCase());
+                    encontrado=elegido.getBibliotecario().toLowerCase().contains(Pista.toLowerCase());
                 if(opcion==7)//prestado o no
                     if(p==1)
-                        encontrado=!libros.get(a).isPrestado();
+                        encontrado=!elegido.isPrestado();
                     else
-                        encontrado=libros.get(a).isPrestado();
+                        encontrado=elegido.isPrestado();
                 if(opcion==8)//usuario
-                    encontrado=libros.get(a).getUsuario().toLowerCase().contains(Pista.toLowerCase());
+                    encontrado=elegido.getUsuario().toLowerCase().contains(Pista.toLowerCase());
                 
                 if(encontrado){
-                    System.out.println("\n     [ Libro nº"+(a+1)+" ]\n"+libros.get(a).toString());
+                    System.out.println("\n     [ Libro nº"+(a+1)+" ]\n"+elegido.toString());
+                    contador++;
+                }
+            }
+            
+            if(elegir){//en caso de que se pida elegir un libro
+                if(contador==1){//si solo hay un libro
+                    return elegido;
+                }else{//si hay mas de un libro se pedira elegir uno entre esos
+                    if(opcion!=1){
+                        System.out.print(">Escribe el titulo del libro: ");
+                        Pista = sc.nextLine();
+                        contador=0;
+                        for(int a=0;a<libros.size();a++){
+                            elegido = libros.get(a);
+                            
+                            if(elegido.getTítulo().toLowerCase().contains(Pista.toLowerCase())){
+                                System.out.println("\n     [ Libro nº"+(a+1)+" ]\n"+elegido.toString());
+                                contador++;
+                            }
+                        }
+                        if(contador==1){//si solo hay un libro
+                            return elegido;
+                        }
+                    }
+                    do{
+                        System.out.print(">Escribe el isbn del libro: ");
+                        Pista = sc.nextLine();
+                        contador=0;
+                        for(int a=0;a<libros.size();a++){
+                            elegido = libros.get(a);
+                            
+                            if(elegido.getISBN().toLowerCase().contains(Pista.toLowerCase())){
+                                System.out.println("\n     [ Libro nº"+(a+1)+" ]\n"+elegido.toString());
+                                contador++;
+                            }
+                        }
+                        if(contador==1){//si solo hay un libro
+                            return elegido;
+                        }
+                    }while(contador!=1);
                 }
             }
         }
+        return null;
     }
     
     public static void BajaLibro(){
+        //El sistema pedirá que busques el libro que se quiere dar de baja (mismos criterios de
+        //búsqueda que en apartado anterior). Cuando se haya mostrado la búsqueda, preguntará el
+        //título del libro de los listados se desea eliminar, si coincide buscar por autor, si coincide por isbn.
         if(libros.isEmpty()){
             System.out.println("No hay objetos en la lista\n");
         }else{
+            BuscarLibro(true);
+            
+            /*
             Libro l = BuscarObjeto();
             System.out.println("\n"+l.toString());
             libros.remove(l);
+            */
             System.out.println("- - Objeto Eliminado - -\n");
         }
     }
     
-    
+    public static void AlquilarLibro(){
+        //El sistema mostrará los libros NO alquilados. 
+        for(int a=0;a<libros.size();a++)
+            if(!libros.get(a).isPrestado())
+                System.out.println("\n     [ Libro nº"+(a+1)+" ]\n"+libros.get(a).toString());
+        
+        //Cuando se haya mostrado la búsqueda, preguntará el título del libro de los listados.
+        System.out.print(">Escribe el titulo del libro que quieres alquilar: ");
+        String AlqTitulo = sc.nextLine();
+        
+        //Registrará el nombre de usuario que lo alquila (mostrando listado de usuarios y eligiendo sobre este listado) 
+        for(int a=0;a<Usuarios.size();a++)
+            System.out.println("\n     [ Usuario nº"+(a+1)+" ]\n"+Usuarios.get(a).toString());
+        System.out.print(">Escribe el nombre de usuario que lo alquila: ");
+            String AlqUser = sc.nextLine();
+        
+        //y el empleado que lo entrega (mostrando listado de empleados y eligiendo sobre este listado)
+        for(int a=0;a<Empleados.size();a++)
+            System.out.println("\n     [ Usuario nº"+(a+1)+" ]\n"+Empleados.get(a).toString());
+        System.out.print(">Escribe el nombre del empleado que lo entrega: ");
+            String AlqEmpl = sc.nextLine();
+        
+        //y modificará los atributos necesarios de ese libro para el funcionamiento correcto del programa de gestión.
+        //PrestarLibro(AlqEmpl,AlqUser);
+        
+    }
 }

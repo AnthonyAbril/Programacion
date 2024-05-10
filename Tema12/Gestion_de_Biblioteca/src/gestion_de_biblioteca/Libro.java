@@ -27,9 +27,19 @@ public class Libro {
         this.pasillo = pasillo;
         this.precio = precio;
         
-        this.prestado = true;
+        this.prestado = false;
         this.bibliotecario = bibliotecario;
         this.usuario = usuario;
+    }
+
+    public void PrestarLibro(String bibliotecario, String usuario) {
+        this.bibliotecario = bibliotecario;
+        this.usuario = usuario;
+        this.prestado = true;
+    }
+    
+        public void PrestarLibro() {
+        this.prestado = false;
     }
 
     @Override
@@ -68,6 +78,8 @@ public class Libro {
     public int getPasillo() {
         return pasillo;
     }
+    
+    
     
     //constructor para un libro sin prestar
     public Libro(String título, String autor, String editorial, String ISBN, int pasillo, Double precio) {
