@@ -262,13 +262,9 @@ public class Principal {
         if(libros.isEmpty()){
             System.out.println("No hay objetos en la lista\n");
         }else{
-            BuscarLibro(true);
-            
-            /*
-            Libro l = BuscarObjeto();
+            Libro l = BuscarLibro(true);
             System.out.println("\n"+l.toString());
             libros.remove(l);
-            */
             System.out.println("- - Objeto Eliminado - -\n");
         }
     }
