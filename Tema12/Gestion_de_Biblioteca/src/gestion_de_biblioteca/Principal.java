@@ -157,6 +157,15 @@ public class Principal {
         libros.add(new Libro(titulo,autor,editorial,ISBN,pasillo,precio));
     }
     
+    public static void LeerLista(ArrayList LL){
+        if(LL.isEmpty()){
+            System.out.println("No coincide con ningun libro");
+        }else{
+            for(int a=0;a<LL.size();a++)
+                System.out.println("\n     [ Libro nº"+(a+1)+" ]\n"+LL.get(a).toString());
+        }
+    }
+    
     public static Libro BuscarLibro(boolean elegir){
         if(!libros.isEmpty()){
             System.out.println("Busqueda de libros"
@@ -181,8 +190,9 @@ public class Principal {
                 System.out.print(">Palabra que se busca: ");
                 Pista = sc.nextLine();
             }
+            ArrayList <Libro> ListaEncontrados = new ArrayList<>();
+            
             Libro elegido = null;
-            int contador=0;
             for(int a=0;a<libros.size();a++){
                 boolean encontrado=false;
                 elegido = libros.get(a);
@@ -208,47 +218,71 @@ public class Principal {
                     encontrado=elegido.getUsuario().toLowerCase().contains(Pista.toLowerCase());
                 
                 if(encontrado){
-                    System.out.println("\n     [ Libro nº"+(a+1)+" ]\n"+elegido.toString());
-                    contador++;
+                    ListaEncontrados.add(elegido);
                 }
             }
             
+            LeerLista(ListaEncontrados);
+            
             if(elegir){//en caso de que se pida elegir un libro
-                if(contador==1){//si solo hay un libro
+                if(ListaEncontrados.size()==1){//si solo hay un libro
                     return elegido;
                 }else{//si hay mas de un libro se pedira elegir uno entre esos
+                    if(ListaEncontrados.isEmpty()){
+                        return null;
+                    }
                     if(opcion!=1){
                         System.out.print(">Escribe el titulo del libro: ");
                         Pista = sc.nextLine();
-                        contador=0;
-                        for(int a=0;a<libros.size();a++){
-                            elegido = libros.get(a);
+                        ArrayList <Libro> AEliminar = new ArrayList<>();
+                        
+                        for(int a=0;a<ListaEncontrados.size();a++){
+                            elegido = ListaEncontrados.get(a);
                             
-                            if(elegido.getTítulo().toLowerCase().contains(Pista.toLowerCase())){
-                                System.out.println("\n     [ Libro nº"+(a+1)+" ]\n"+elegido.toString());
-                                contador++;
+                            if(!elegido.getTítulo().toLowerCase().contains(Pista.toLowerCase())){
+                                AEliminar.add(elegido);
                             }
                         }
-                        if(contador==1){//si solo hay un libro
+                        
+                        for(int a=0;a<AEliminar.size();a++){
+                            ListaEncontrados.remove(AEliminar.get(a));
+                        }
+                        
+                        LeerLista(ListaEncontrados);
+                        if(ListaEncontrados.size()==1){//si solo hay un libro
                             return elegido;
+                        }
+                        
+                        if(ListaEncontrados.isEmpty()){
+                            return null;
                         }
                     }
                     do{
                         System.out.print(">Escribe el isbn del libro: ");
                         Pista = sc.nextLine();
-                        contador=0;
-                        for(int a=0;a<libros.size();a++){
-                            elegido = libros.get(a);
+                        ArrayList <Libro> AEliminar = new ArrayList<>();
+                        
+                        for(int a=0;a<ListaEncontrados.size();a++){
+                            elegido = ListaEncontrados.get(a);
                             
-                            if(elegido.getISBN().toLowerCase().contains(Pista.toLowerCase())){
-                                System.out.println("\n     [ Libro nº"+(a+1)+" ]\n"+elegido.toString());
-                                contador++;
+                            if(!elegido.getISBN().toLowerCase().contains(Pista.toLowerCase())){
+                                AEliminar.add(elegido);
                             }
                         }
-                        if(contador==1){//si solo hay un libro
+                        
+                        for(int a=0;a<AEliminar.size();a++){
+                            ListaEncontrados.remove(AEliminar.get(a));
+                        }
+                        
+                        LeerLista(ListaEncontrados);
+                        if(ListaEncontrados.size()==1){//si solo hay un libro
                             return elegido;
                         }
-                    }while(contador!=1);
+                        
+                        if(ListaEncontrados.isEmpty()){
+                            return null;
+                        }
+                    }while(ListaEncontrados.size()!=1);
                 }
             }
         }
@@ -263,9 +297,10 @@ public class Principal {
             System.out.println("No hay objetos en la lista\n");
         }else{
             Libro l = BuscarLibro(true);
-            System.out.println("\n"+l.toString());
-            libros.remove(l);
-            System.out.println("- - Objeto Eliminado - -\n");
+            if(l!=null){
+                libros.remove(l);
+                System.out.println("- - Objeto Eliminado - -\n");
+            }
         }
     }
     
