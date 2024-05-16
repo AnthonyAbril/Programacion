@@ -306,13 +306,55 @@ public class Principal {
     
     public static void AlquilarLibro(){
         //El sistema mostrará los libros NO alquilados. 
+        ArrayList <Libro> ListaEncontrados = new ArrayList<>();
+        Libro elegido = null;
+        
         for(int a=0;a<libros.size();a++)
             if(!libros.get(a).isPrestado())
-                System.out.println("\n     [ Libro nº"+(a+1)+" ]\n"+libros.get(a).toString());
+                ListaEncontrados.add(libros.get(a));
+        
+        
+        do{
+            System.out.print(">Escribe el titulo del libro que quieres alquilar: ");
+            String Pista = sc.nextLine();
+            ArrayList <Libro> AEliminar = new ArrayList<>();
+
+            for(int a=0;a<ListaEncontrados.size();a++){
+                elegido = ListaEncontrados.get(a);
+
+                if(!elegido.getTítulo().toLowerCase().contains(Pista.toLowerCase())){
+                    AEliminar.add(elegido);
+                }
+            }
+
+            for(int a=0;a<AEliminar.size();a++){
+                ListaEncontrados.remove(AEliminar.get(a));
+            }
+
+            LeerLista(ListaEncontrados);
+            
+        }while(ListaEncontrados.isEmpty());
+        
+        do{
+            System.out.print(">Escribe el isbn del libro: ");
+            String Pista = sc.nextLine();
+            ArrayList <Libro> AEliminar = new ArrayList<>();
+
+            for(int a=0;a<ListaEncontrados.size();a++){
+                elegido = ListaEncontrados.get(a);
+
+                if(!elegido.getISBN().toLowerCase().contains(Pista.toLowerCase())){
+                    AEliminar.add(elegido);
+                }
+            }
+
+            for(int a=0;a<AEliminar.size();a++){
+                ListaEncontrados.remove(AEliminar.get(a));
+            }
+        }while(ListaEncontrados.size()!=1);
         
         //Cuando se haya mostrado la búsqueda, preguntará el título del libro de los listados.
-        System.out.print(">Escribe el titulo del libro que quieres alquilar: ");
-        String AlqTitulo = sc.nextLine();
+        String AlqTitulo = elegido.getTítulo();
         
         //Registrará el nombre de usuario que lo alquila (mostrando listado de usuarios y eligiendo sobre este listado) 
         for(int a=0;a<Usuarios.size();a++)

@@ -7,4 +7,8 @@ class Empleado {
     public void Empleado(String nombre){
         this.nombre = nombre;
     }
+
+    public String getNombre() {
+        return nombre;
+    }
 }
