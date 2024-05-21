@@ -29,7 +29,7 @@ public class Plaza {
         this.fechayhora = fechayhora;
     }
 
-    public Plaza(String dni, String matricula, String marca, String modelo, String color, int fechayhora) {
+    public void OcuparPlaza(String dni, String matricula, String marca, String modelo, String color, int fechayhora) {
         this.dni = dni;
         this.matricula = matricula;
         this.marca = marca;
@@ -40,6 +40,10 @@ public class Plaza {
     }
 
     public Plaza() {
+    }
+
+    public String getDni() {
+        return dni;
     }
     
     
