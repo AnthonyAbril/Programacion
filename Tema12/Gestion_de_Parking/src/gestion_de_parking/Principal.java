@@ -21,21 +21,20 @@ public class Principal {
     
     
     static Scanner sc = new Scanner(System.in);
-    private static ArrayList <ArrayList <Plaza>> plazas = new ArrayList<>();
+    private static ArrayList <ArrayList> plazas = new ArrayList<>();
     private static File ficheroparking;
     private static final String RutaPorDefecto = "/home/alumnot/NetBeansProjects/Programacion/Tema12/gestion_de_parking_ficheros";
     private static String ruta;
     
-    public static void main(String[] args) {
-    //El número de plazas de alquiler del parking es 50, distribuidas en dos plantas: 30 en la
+        //El número de plazas de alquiler del parking es 50, distribuidas en dos plantas: 30 en la
     //primera planta y 20 en la segunda. Cada vez que llega un coche al parking, se debe
     //comprobar si quedan plazas libres en la planta superior. Si no queda ninguna libre en la
     //planta superior, se comprueba la disponibilidad de la planta inferior. Se intentará, siempre
     //que sea posible, asignar la plaza más cercana a la salida, en la primera planta, o a la rampa
     //de subida, en la planta inferior.
 
-    ArrayList <Plaza> plazaPlantSup = new ArrayList<>(); //20 plazas
-    ArrayList <Plaza> plazaPlantInf = new ArrayList<>(); //20 plazas
+    private static ArrayList <Plaza> plazaPlantSup = new ArrayList<>(); //20 plazas
+    private static ArrayList <Plaza> plazaPlantInf = new ArrayList<>(); //20 plazas
     
     //Para los dueños de los negocios cercanos, se han reservado 10 plazas de aparcamiento en
     //la planta inferior, las más alejadas de la rampa de subida. Cada una de estas plazas estará
@@ -43,23 +42,9 @@ public class Principal {
     //nombre, apellidos, dirección, teléfono y cuenta bancaria, así como su coche, del que se
     //guardarán los mismos datos que para las plazas de alquiler.
     
-    ArrayList <Plaza> plazareservada = new ArrayList<>(); //10 plazas
+    private static ArrayList <Plaza> plazareservada = new ArrayList<>(); //10 plazas
     
-    plazas.add(plazaPlantSup);
-    plazas.add(plazaPlantInf);
-    plazas.add(plazareservada);
-    
-        if(true){//rellenar arraylist con objeto parking
-            for(int a=0;a<20;a++)
-                plazas.get(0).add(new Plaza());
-            
-            for(int a=0;a<20;a++)
-                plazas.get(1).add(new Plaza());
-            
-            for(int a=0;a<10;a++)
-                plazas.get(2).add(new Plaza());
-        }
-
+    public static void main(String[] args) {
         try{
             PreguntarRuta();
             
@@ -135,29 +120,48 @@ public class Principal {
         
         ficheroparking = new File(ruta);
         ficheroparking.mkdirs();
-        ficheroparking = new File(ruta+"/ficherodinero.ddr");
+        ficheroparking = new File(ruta+"/ficheroparking.ddr");
     }
     
     public static void CargarListaEmpleados(File archivo)throws ClassNotFoundException, EOFException{
+        
+        plazas.add(plazaPlantSup);
+        plazas.add(plazaPlantInf);
+        plazas.add(plazareservada);
+        
+        if(true){//rellenar arraylist con objeto parking
+            System.out.println("rellenar");
+            for(int a=0;a<20;a++)
+                plazas.get(0).add(new Plaza());
+
+            for(int a=0;a<20;a++)
+                plazas.get(1).add(new Plaza());
+
+            for(int a=0;a<10;a++)
+                plazas.get(2).add(new Plaza());
+        }
+        
         try{
             FileInputStream fis = new FileInputStream(archivo);
             ObjectInputStream ois = new ObjectInputStream(fis);
-            
             //revisar si tienen informacion para preguntar si el usuario quiere usarla o no
-            if(ficheroparking.exists()&&ficheroparking.length()>0){//si ya existe un fichero ahi y tiene contenido
+            if(ficheroparking.exists()){
+                if(ficheroparking.length()>0){//si ya existe un fichero ahi y tiene contenido
 
-                System.out.print("ya hay un fichero con contenido en la ruta indicada"
-                        + "\n\t1-usar la informacion fichero"
-                        + "\n\t2-crear un nuevo fichero");
-                int opcion = eligeopcion(1,2,"\n>Elige una opcion: ");;
+                    System.out.print("ya hay un fichero con contenido en la ruta indicada"
+                            + "\n\t1-usar la informacion fichero"
+                            + "\n\t2-crear un nuevo fichero");
+                    int opcion = eligeopcion(1,2,"\n>Elige una opcion: ");
 
-                if(opcion==1){//lee la informacion fichero
-                    while(true){
-                        plazas=(ArrayList <ArrayList <Plaza>>)ois.readObject();
+                    if(opcion==1){//lee la informacion fichero
+                        while(true){
+                            System.out.println(" - - - Leyendo lista - - -");
+                            plazas=(ArrayList <ArrayList>)ois.readObject();
+                        }
                     }
                 }
             }
-            
+
         }catch(IOException ex){
             System.out.println(" - - Datos cargados - - ");
         }
@@ -282,7 +286,7 @@ public class Principal {
                 boolean encontrado=false;
                 int plazadisp=0;
                 for(int a=0;encontrado;a++)//buscamos en el piso disponible la plaza disponible mas inferior posible
-                    if(plazas.get(pisodisp).get(a).getDni()==null){ //si encuentra una plaza libre
+                    if(plazaPlantInf.get(a).getDni()==null){ //si encuentra una plaza libre
                         plazadisp=a;
                         encontrado=true;
                     }
