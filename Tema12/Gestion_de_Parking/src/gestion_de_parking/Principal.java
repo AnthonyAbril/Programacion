@@ -21,7 +21,7 @@ public class Principal {
     
     
     static Scanner sc = new Scanner(System.in);
-    private static ArrayList <ArrayList> plazas = new ArrayList<>();
+    private static ArrayList <ArrayList <Plaza>> plazas = new ArrayList<>();
     private static File ficheroparking;
     private static final String RutaPorDefecto = "/home/alumnot/NetBeansProjects/Programacion/Tema12/gestion_de_parking_ficheros";
     private static String ruta;
@@ -156,7 +156,7 @@ public class Principal {
                     if(opcion==1){//lee la informacion fichero
                         while(true){
                             System.out.println(" - - - Leyendo lista - - -");
-                            plazas=(ArrayList <ArrayList>)ois.readObject();
+                            plazas=(ArrayList <ArrayList <Plaza>>)ois.readObject();
                         }
                     }
                 }
@@ -286,7 +286,7 @@ public class Principal {
                 boolean encontrado=false;
                 int plazadisp=0;
                 for(int a=0;encontrado;a++)//buscamos en el piso disponible la plaza disponible mas inferior posible
-                    if(plazaPlantInf.get(a).getDni()==null){ //si encuentra una plaza libre
+                    if(plazas.get(pisodisp).get(a).getDni()==null){ //si encuentra una plaza libre
                         plazadisp=a;
                         encontrado=true;
                     }
