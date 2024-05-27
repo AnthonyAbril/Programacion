@@ -189,7 +189,7 @@ public class Principal {
                 System.out.print("ya hay un fichero con contenido en la ruta indicada"
                         + "\n\t1-usar la informacion fichero"
                         + "\n\t2-crear un nuevo fichero");
-                int opcion = eligeopcion(1,2,"\n>Elige una opcion: ");;
+                int opcion = eligeopcion(1,2,"\n>Elige una opcion: ");
 
                 if(opcion==1){//lee la informacion fichero
                     while(true){
