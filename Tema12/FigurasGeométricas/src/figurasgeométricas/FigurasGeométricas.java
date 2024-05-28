@@ -1,6 +1,13 @@
 
 package figurasgeométricas;
 
+import java.io.EOFException;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Scanner;
@@ -9,9 +16,110 @@ public class FigurasGeométricas {
 
     static Scanner sc = new Scanner(System.in);
     static ArrayList<Figura> figuras = new ArrayList <>();
+    
+    private static File ficherofiguras;
+    private static final String RutaPorDefecto = "/home/alumnot/NetBeansProjects/Programacion/Tema12/FigurasGeometricas_ficheros";
+    private static String ruta;
+    
+    
     public static void main(String[] args) {        
         Figura.RellenarTabla();
-        Menu();
+        
+       try{
+            PreguntarRuta();
+            
+            CargarListaEmpleados(ficherofiguras);
+            
+            Menu();
+            
+            GuardarListaEmpleados(ficherofiguras);
+        }catch(ClassNotFoundException ex){
+            System.out.println(" [ NO SE HA ENCONTRADO LA CLASE ] ");
+        }catch(EOFException ex){
+            System.out.println("");
+        }
+    }
+    
+    
+    
+    public static double solodouble(String texto){
+        boolean isnumeric=false;
+        double numero=0;
+        do{
+            try{
+                System.out.print(texto);
+                numero = sc.nextDouble();
+                if(numero<=0){
+                    System.out.println(" [ EL VALOR TIENE QUE SER POSITIVO ] ");
+                }else{
+                    isnumeric=true;
+                }
+                
+            }catch(java.util.InputMismatchException  ex){
+                System.out.println(" [ EL VALOR DEBE SER UN NUMERO DECIMAL ] ");
+                sc.nextLine();
+            }
+        }while(isnumeric==false);
+        return numero;
+    }
+    
+    public static int solonumero(String texto){
+        boolean isnumeric=false;
+        int numero=0;
+        do{
+            try{
+                System.out.print(texto);
+                numero = sc.nextInt();
+                if(numero<=0){
+                    System.out.println(" [ EL VALOR TIENE QUE SER POSITIVO ] ");
+                }else{
+                    isnumeric=true;
+                }
+            }catch(java.util.InputMismatchException  ex){
+                System.out.println(" [ EL VALOR DEBE SER UN NUMERO ENTERO ] ");
+                sc.nextLine();
+            }
+        }while(isnumeric==false);
+        return numero;
+    }
+    
+    public static int eligeopcion(int min, int max, String texto){
+        int opcion = 0;
+        do{
+            opcion = solonumero(texto);
+            if(opcion<min || opcion >max){
+                System.out.println(" [ OPCION NO DISPONIBLE ] ");
+            }
+        }while(opcion<min || opcion >max);
+        return opcion;
+    }
+    
+    public static void PreguntarRuta(){
+        System.out.print("Elige una ruta"
+                + "\n\t1-ruta por defecto"
+                + "\n\t2-escribir una ruta");
+        int opcion = eligeopcion(1,2,"\n>Elige una opcion: ");
+        
+        sc.nextLine();
+        
+        if(opcion==1){//ruta por defecto
+            ruta = RutaPorDefecto;
+        }else{//ruta del usuario
+            System.out.print("Introduce la ruta de la carpeta contenedora del fichero: ");
+            ruta = sc.nextLine();
+        }
+        
+        ficherofiguras = new File(ruta);
+        ficherofiguras.mkdirs();
+        ficherofiguras = new File(ruta+"/ficherofiguras.ddr");
+    }
+    
+    public static void titulo(String texto){
+        System.out.println("\n"+texto);
+        for(int a=1;a<=texto.length();a++){
+            System.out.print("*");
+        }
+        System.out.println("");
     }
     
     public static void Menu(){
@@ -29,13 +137,13 @@ public class FigurasGeométricas {
                         + "\n\t7. Vaciar la colección, previa confirmación por parte del usuario de dicha operación"
                         + "\n\t8. Salir"
                         + "\n>Elige una opcion: ");
-                opcion=sc.nextInt();
+                opcion = eligeopcion(1, 8, "\n>Elige opcion: ");
                 
                 switch (opcion) {
                     case 1:
-                        AgregarFigura();
+                        AgregarFigura();    //HECHO
                         break;
-                    case 2:
+                    case 2:    //HECHO
                         System.out.println("Hay "+figuras.size()+" figuras actualmente");
                         break;
                     case 3:
@@ -64,44 +172,96 @@ public class FigurasGeométricas {
             }while(opcion!=8);
             
         }catch(java.util.InputMismatchException ex){
-            System.out.println(">El valor debe ser un numero entero");
+            System.out.println(" [ EL VALOR DEBE SER UN NUMERO ENTERO ] \n");
             sc.nextLine();  //limpiar el buffera
-            
-            Menu();
         }
     }
     
+    
+    
+    public static void CargarListaEmpleados(File archivo)throws ClassNotFoundException, EOFException{
+        try{
+            FileInputStream fis = new FileInputStream(archivo);
+            ObjectInputStream ois = new ObjectInputStream(fis);
+            
+            //revisar si tienen informacion para preguntar si el usuario quiere usarla o no
+            if(ficherofiguras.exists()&&ficherofiguras.length()>0){//si ya existe un fichero ahi y tiene contenido
+
+                System.out.print("ya hay un fichero con contenido en la ruta indicada"
+                        + "\n\t1-usar la informacion fichero"
+                        + "\n\t2-crear un nuevo fichero");
+                int opcion = eligeopcion(1,2,"\n>Elige una opcion: ");
+
+                if(opcion==1){//lee la informacion fichero
+                    while(true){
+                        figuras=(ArrayList <Figura>)ois.readObject();
+                    }
+                }
+            }
+            
+        }catch(IOException ex){
+            System.out.println(" - - Datos cargados - - ");
+        }
+    }
+    
+    public static void GuardarListaEmpleados(File archivo){
+        System.out.println("Quieres guardar?"
+                + "\n\t1-Si"
+                + "\n\t2-No");
+        if(eligeopcion(1,2,">Elige una opcion: ")==1){
+            try{
+                if(archivo.exists()){
+                FileOutputStream fos = new FileOutputStream(archivo,true);
+                MiObjectOutputStream moos = new MiObjectOutputStream(fos);
+                
+                moos.writeObject(figuras);
+            
+                fos.close();
+                moos.close();
+                }else{
+                    FileOutputStream fos = new FileOutputStream(archivo);
+                    ObjectOutputStream oos = new ObjectOutputStream(fos);
+
+                    oos.writeObject(figuras);
+
+                    fos.close();
+                    oos.close();
+                }
+
+                System.out.println("\n - - Datos guardados - - ");
+                System.out.println("Se han guardado en: "+archivo);
+
+            }catch(IOException ex){
+                System.out.println("Error al guardar los datos");
+            }
+        }else{
+            System.out.println("Programa finalizado sin guardar");
+        }
+    }
+    
+    
     public static void AgregarFigura(){
+        titulo("CREACIÓN DE UNA FIGURA");
         
         System.out.print("Que figura quieres agregar?"
                 + "\n\t1-triangulo"
                 + "\n\t2-rectangulo"
                 + "\n\t3-trapecio"
-                + "\n\t4-hexagono"
-                + "\n>Elige una opcion: ");
-        int op = sc.nextInt();
-        int b=NumPosit("Indica la base: ");
-        int a=NumPosit("Indica la altura: ");
+                + "\n\t4-hexagono");
+        int op = eligeopcion(1, 4, "\n>Elige opcion: ");
+        int b=solonumero("Indica la base: ");
+        int a=solonumero("Indica la altura: ");
         
         if(op==1){//triangulo
             figuras.add(new Triangulo(b,a));
         }else if(op==2){//rectangulo
             figuras.add(new Rectangulo(b,a));
         }else if(op==3){//trapecio
-            int B=NumPosit("Indica la base mayor: ");
+            int B=solonumero("Indica la base mayor: ");
             figuras.add(new Trapecio(B,b,a));
         }else if(op==4){//hexagono
             figuras.add(new Hexagono(b,a));
         }
-    }
-    
-    public static int NumPosit(String texto){
-        int numero=-1;
-        do{
-            System.out.print(texto);
-            numero=sc.nextInt();
-        }while(numero<=0);
-        return numero;
     }
     
     public static void MostrarFiguras(){
@@ -111,9 +271,13 @@ public class FigurasGeométricas {
         //d. Perímetro
         //e. Posición que ocupa en la colección
         int contador=0;
-        for (Figura elemento:figuras){
-            contador++;
-            System.out.println("\n\tFIGURA N"+contador+elemento.toString());
+        if(!figuras.isEmpty()){
+            for (Figura elemento:figuras){
+                contador++;
+                System.out.println("\n - - - - FIGURA N"+contador+elemento.toString());
+            }
+        }else{
+            System.out.println(" [NO HAY FIGURAS]");
         }
     }
     
@@ -152,14 +316,14 @@ public class FigurasGeométricas {
                     op = sc.nextInt();
                 }while(op>4||op<1);
                 
-                int b=NumPosit("Indica la base: ");
-                int a=NumPosit("Indica la altura: ");
+                int b=solonumero("Indica la base: ");
+                int a=solonumero("Indica la altura: ");
                 if(op==1){//triangulo
                     figuras.set(posicion, new Triangulo(b,a));
                 }else if(op==2){//rectangulo
                     figuras.set(posicion, new Rectangulo(b,a));
                 }else if(op==3){//trapecio
-                    int B=NumPosit("Indica la base mayor: ");
+                    int B=solonumero("Indica la base mayor: ");
                     figuras.set(posicion, new Trapecio(B,b,a));
                 }else if(op==4){//hexagono
                     figuras.set(posicion, new Hexagono(b,a));
