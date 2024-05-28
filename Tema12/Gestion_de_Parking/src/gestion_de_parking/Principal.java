@@ -21,7 +21,7 @@ public class Principal {
     
     
     static Scanner sc = new Scanner(System.in);
-    private static ArrayList <ArrayList <Plaza>> plazas = new ArrayList<>();
+    private static ArrayList <ArrayList> plazas = new ArrayList<>();
     private static File ficheroparking;
     private static final String RutaPorDefecto = "/home/alumnot/NetBeansProjects/Programacion/Tema12/gestion_de_parking_ficheros";
     private static String ruta;
@@ -125,20 +125,11 @@ public class Principal {
     
     public static void CargarListaEmpleados(File archivo)throws ClassNotFoundException, EOFException{
         
-        plazas.add(plazaPlantSup);
-        plazas.add(plazaPlantInf);
-        plazas.add(plazareservada);
-        
-        if(true){//rellenar arraylist con objeto parking
-            System.out.println("rellenar");
-            for(int a=0;a<20;a++)
-                plazas.get(0).add(new Plaza());
-
-            for(int a=0;a<20;a++)
-                plazas.get(1).add(new Plaza());
-
-            for(int a=0;a<10;a++)
-                plazas.get(2).add(new Plaza());
+        if(false){//rellenar arraylist con objeto parking
+            
+                plazas.add(plazaPlantSup);
+                plazas.add(plazaPlantInf);
+                plazas.add(plazareservada);
         }
         
         try{
@@ -156,7 +147,7 @@ public class Principal {
                     if(opcion==1){//lee la informacion fichero
                         while(true){
                             System.out.println(" - - - Leyendo lista - - -");
-                            plazas=(ArrayList <ArrayList <Plaza>>)ois.readObject();
+                            plazas=(ArrayList <ArrayList>)ois.readObject();
                         }
                     }
                 }
@@ -165,6 +156,21 @@ public class Principal {
         }catch(IOException ex){
             System.out.println(" - - Datos cargados - - ");
         }
+       if(!plazas.isEmpty()){//si el plazas que hemos leido tiene contenido lo leemos
+            plazaPlantSup=plazas.get(0);
+            plazaPlantInf=plazas.get(1);
+            plazareservada=plazas.get(2);
+       }else{//si no tiene contenido lo llenamos
+           System.out.println("rellenar");
+            for(int a=0;plazaPlantSup.size()<20;a++)
+                plazaPlantSup.add(new Plaza());
+
+            for(int a=0;plazaPlantInf.size()<20;a++)
+                plazaPlantInf.add(new Plaza());
+
+            for(int a=0;plazareservada.size()<10;a++)
+                plazareservada.add(new Plaza());
+       }
     }
     
     public static void GuardarListaEmpleados(File archivo){
@@ -172,6 +178,12 @@ public class Principal {
                 + "\n\t1-Si"
                 + "\n\t2-No");
         if(eligeopcion(1,2,">Elige una opcion: ")==1){
+            if(true){
+                plazas.add(0, plazaPlantSup);
+                plazas.add(1, plazaPlantInf);
+                plazas.add(2, plazareservada);
+            }
+            
             try{
                 if(archivo.exists()){
                     FileOutputStream fos = new FileOutputStream(archivo,true);
@@ -243,11 +255,11 @@ public class Principal {
     
     public static void PlazasLibres(){
         
-        System.out.println("En el piso superior hay "+RecorreParking(plazas.get(0))+" plazas de alquiler libres");  //plazas de alquiler de piso superior
+        System.out.println("En el piso superior hay "+RecorreParking(plazaPlantSup)+" plazas de alquiler libres");  //plazas de alquiler de piso superior
             
-        System.out.println("En el piso inferior hay "+RecorreParking(plazas.get(1))+" plazas de alquiler libres");  //plazas de alquiler de piso inferior
+        System.out.println("En el piso inferior hay "+RecorreParking(plazaPlantInf)+" plazas de alquiler libres");  //plazas de alquiler de piso inferior
             
-        System.out.println("En el piso inferior hay "+RecorreParking(plazas.get(2))+" plazas reservadas libres");  //plazas reservadas a dueños
+        System.out.println("En el piso inferior hay "+RecorreParking(plazareservada)+" plazas reservadas libres");  //plazas reservadas a dueños
     }
     
     public static int RecorreParking(ArrayList<Plaza> lista){
@@ -274,9 +286,9 @@ public class Principal {
         if(op==1){//parking normal
             
             int pisodisp=-1;
-            if(RecorreParking(plazas.get(0))>0){//Si queda alguna libre en la planta superior
+            if(RecorreParking(plazaPlantSup)>0){//Si queda alguna libre en la planta superior
                 pisodisp=0;
-            }else if(RecorreParking(plazas.get(1))>0){//Si no queda ninguna libre en la planta superior se busca la inferior
+            }else if(RecorreParking(plazaPlantInf)>0){//Si no queda ninguna libre en la planta superior se busca la inferior
                 pisodisp=1;
             }else{
                 System.out.println(" [ NO HAY PLAZAS DISPONIBLES ]");
@@ -286,7 +298,7 @@ public class Principal {
                 boolean encontrado=false;
                 int plazadisp=0;
                 for(int a=0;encontrado;a++)//buscamos en el piso disponible la plaza disponible mas inferior posible
-                    if(plazas.get(pisodisp).get(a).getDni()==null){ //si encuentra una plaza libre
+                    if(plazaPlantInf.get(a).getDni()==null){ //si encuentra una plaza libre
                         plazadisp=a;
                         encontrado=true;
                     }
@@ -313,10 +325,14 @@ public class Principal {
                 + eligeopcion(0,23,"\n>Introduce la hora: ")
                 + eligeopcion(0,59,"\n>Introduce el minuto: ");
                 
-                plazas.get(pisodisp).get(plazadisp).OcuparPlaza(dni, mat, mar, mod, col, fecha);
+                if(pisodisp==0){
+                    plazaPlantSup.get(plazadisp).OcuparPlaza(dni, mat, mar, mod, col, fecha);
+                }else if(pisodisp==1){
+                    plazaPlantInf.get(plazadisp).OcuparPlaza(dni, mat, mar, mod, col, fecha);
+                }
             }
         }else{//parking especial
-            System.out.println(plazas.get(1).get(6).getDni());
+            System.out.println(plazareservada.get(6).getDni());
         }
     }
 }
