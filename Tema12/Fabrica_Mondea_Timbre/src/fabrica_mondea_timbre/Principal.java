@@ -112,7 +112,7 @@ public class Principal {
         
         ficherodinero = new File(ruta);
         ficherodinero.mkdirs();
-        ficherodinero = new File(ruta+"/ficherodinero.ddr");
+        ficherodinero = new File(ruta+"/ficherofiguras.ddr");
     }
     
     public static void titulo(String texto){
@@ -124,9 +124,9 @@ public class Principal {
     }
     
     public static void Menu(){
-        int op=0;
-        do{
-            try{
+        try {
+            int op = 0;
+            do {
                 System.out.print("----- OPCIONES --------------"
                         + "\n\t1-Crear objetos"//hecho
                         + "\n\t2-Crear copias de objetos"//hecho
@@ -137,7 +137,7 @@ public class Principal {
                         + "\n\t7-Modificar los atributos de dimensión de un objeto"//hecho
                         + "\n\t8-Eliminar objetos"//hecho
                         + "\n\t9-Salir");
-                op=eligeopcion(1,9,"\n>Elige opcion: ");
+                op = eligeopcion(1, 9, "\n>Elige opcion: ");
 
                 switch (op) {
                     case 1:
@@ -156,11 +156,12 @@ public class Principal {
                         OrdenarLista();
                         break;
                     case 6:
-                        if(ListaDinero.size()>0)
-                            System.out.println(BuscarObjeto().toString()+"\n");
-                        else
+                        if (ListaDinero.size() > 0) {
+                            System.out.println(BuscarObjeto().toString() + "\n");
+                        } else {
                             System.out.println("No hay objetos en la lista\n");
-                            
+                        }
+
                         break;
                     case 7:
                         ModificarDimension();
@@ -171,11 +172,11 @@ public class Principal {
                     default:
                         break;
                 }
-            }catch(java.util.InputMismatchException ex){
-                System.out.println(" [ EL VALOR DEBE SER UN NUMERO ENTERO ] \n");
-                sc.nextLine();
-            }
-        }while(op!=9);
+            } while (op != 9);
+        } catch (java.util.InputMismatchException ex) {
+            System.out.println(" [ EL VALOR DEBE SER UN NUMERO ENTERO ] \n");
+            sc.nextLine();
+        }
     }
     
     public static void CargarListaEmpleados(File archivo)throws ClassNotFoundException, EOFException{
