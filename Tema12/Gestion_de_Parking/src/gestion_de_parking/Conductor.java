@@ -1,7 +1,10 @@
 
 package gestion_de_parking;
 
-public class Conductor {
+import java.io.Serializable;
+
+public class Conductor implements Serializable{
+    private static final long serialVersionUID = 6L;
     //Cada una de estas plazas estará
     //asignada a uno de esos dueños, y se deberán guardar sus datos de identificación: dni,
     //nombre, apellidos, dirección, teléfono y cuenta bancaria, así como su coche, del que se

@@ -20,10 +20,12 @@ public class Principal {
     //programa informático que le gestione el negocio
     
     
+
+
     static Scanner sc = new Scanner(System.in);
     private static ArrayList <ArrayList> plazas = new ArrayList<>();
     private static File ficheroparking;
-    private static final String RutaPorDefecto = "/home/alumnot/NetBeansProjects/Programacion/Tema12/gestion_de_parking_ficheros";
+    private static final String RutaPorDefecto = "ficheros/";
     private static String ruta;
     
         //El número de plazas de alquiler del parking es 50, distribuidas en dos plantas: 30 en la
@@ -125,13 +127,6 @@ public class Principal {
     
     public static void CargarListaEmpleados(File archivo)throws ClassNotFoundException, EOFException{
         
-        if(false){//rellenar arraylist con objeto parking
-            
-                plazas.add(plazaPlantSup);
-                plazas.add(plazaPlantInf);
-                plazas.add(plazareservada);
-        }
-        
         try{
             FileInputStream fis = new FileInputStream(archivo);
             ObjectInputStream ois = new ObjectInputStream(fis);
@@ -146,8 +141,8 @@ public class Principal {
 
                     if(opcion==1){//lee la informacion fichero
                         while(true){
-                            System.out.println(" - - - Leyendo lista - - -");
                             plazas=(ArrayList <ArrayList>)ois.readObject();
+                            System.out.println(" - - - Leyendo lista - - -");
                         }
                     }
                 }
@@ -161,9 +156,10 @@ public class Principal {
             plazaPlantInf=plazas.get(1);
             plazareservada=plazas.get(2);
        }else{//si no tiene contenido lo llenamos
-           System.out.println("rellenar");
-            for(int a=0;plazaPlantSup.size()<20;a++)
+           System.out.println("rellenars");
+            for(int a=0;plazaPlantSup.size()<20;a++){
                 plazaPlantSup.add(new Plaza());
+            }
 
             for(int a=0;plazaPlantInf.size()<20;a++)
                 plazaPlantInf.add(new Plaza());
@@ -173,46 +169,6 @@ public class Principal {
        }
     }
     
-    public static void GuardarListaEmpleados(File archivo){
-        System.out.println("Quieres guardar?"
-                + "\n\t1-Si"
-                + "\n\t2-No");
-        if(eligeopcion(1,2,">Elige una opcion: ")==1){
-            if(true){
-                plazas.add(0, plazaPlantSup);
-                plazas.add(1, plazaPlantInf);
-                plazas.add(2, plazareservada);
-            }
-            
-            try{
-                if(archivo.exists()){
-                    FileOutputStream fos = new FileOutputStream(archivo,true);
-                    MiObjectOutputStream moos = new MiObjectOutputStream(fos);
-
-                    moos.writeObject(plazas);
-
-                    fos.close();
-                    moos.close();
-                }else{
-                    FileOutputStream fos = new FileOutputStream(archivo);
-                    ObjectOutputStream oos = new ObjectOutputStream(fos);
-
-                    oos.writeObject(plazas);
-
-                    fos.close();
-                    oos.close();
-                }
-
-                System.out.println("\n - - Datos guardados - - ");
-                System.out.println("Se han guardado en: "+archivo);
-
-            }catch(IOException ex){
-                System.out.println("Error al guardar los datos");
-            }
-        }else{
-            System.out.println("Programa finalizado sin guardar");
-        }
-    }
     
     public static void Menu(){
         int op=0;
@@ -251,6 +207,47 @@ public class Principal {
                 sc.nextLine();
             }
         }while(op!=6);
+    }
+    
+ public static void GuardarListaEmpleados(File archivo){
+        System.out.println("Quieres guardar?"
+                + "\n\t1-Si"
+                + "\n\t2-No");
+        if(eligeopcion(1,2,">Elige una opcion: ")==1){
+            if(true){
+                plazas.add(0, plazaPlantSup);
+                plazas.add(1, plazaPlantInf);
+                plazas.add(2, plazareservada);
+            }
+            
+            try{
+                if(archivo.exists()){
+                    FileOutputStream fos = new FileOutputStream(archivo,true);
+                    MiObjectOutputStream moos = new MiObjectOutputStream(fos);
+
+                    moos.writeObject(plazas);
+
+                    fos.close();
+                    moos.close();
+                }else{
+                    FileOutputStream fos = new FileOutputStream(archivo);
+                    ObjectOutputStream oos = new ObjectOutputStream(fos);
+
+                    oos.writeObject(plazas);
+
+                    fos.close();
+                    oos.close();
+                }
+
+                System.out.println("\n - - Datos guardados - - ");
+                System.out.println("Se han guardado en: "+archivo);
+
+            }catch(IOException ex){
+                System.out.println("Error al guardar los datos");
+            }
+        }else{
+            System.out.println("Programa finalizado sin guardar");
+        }
     }
     
     public static void PlazasLibres(){

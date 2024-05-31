@@ -4,7 +4,10 @@
  */
 package gestion_de_parking;
 
-public class Plaza {
+import java.io.Serializable;
+
+public class Plaza implements Serializable{
+    private static final long serialVersionUID = 6L;
         //Una vez asignada la plaza, se deben guardar una serie de datos del coche que va a aparcar
         //en dicha plaza asignada: dni del conductor, matrícula, marca, modelo, color, si presenta
         //desperfectos claramente visibles y una descripción breve de los mismos (sólo en caso de
@@ -40,6 +43,12 @@ public class Plaza {
     }
 
     public Plaza() {
+        this.dni = null;
+        this.matricula = null;
+        this.marca = null;
+        this.modelo = null;
+        this.color = null;
+        this.desperfectos= null;
     }
 
     public String getDni() {
