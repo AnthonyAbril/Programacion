@@ -1,7 +1,10 @@
 
 package gestion_de_biblioteca;
 
-class Usuario {
+import java.io.Serializable;
+
+class Usuario implements Serializable{
+    private static final long serialVersionUID = 6L;
     String nombre;
     
     public void Usuario(String nombre){

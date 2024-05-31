@@ -1,7 +1,10 @@
 
 package gestion_de_biblioteca;
 
-public class Libro {
+import java.io.Serializable;
+
+public class Libro implements Serializable{
+    private static final long serialVersionUID = 6L;
     //Tenemos libros (título, autor, editorial, estado préstamos (SI/NO), ubicación en biblioteca (pasillo
     //numérico), ISBN, precio, nombre bibliotecario/a que lo ha prestado, nombre usuario biblioteca que
     //tiene el libro).
