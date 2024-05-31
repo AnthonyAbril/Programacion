@@ -1,9 +1,11 @@
 
 package figurasgeométricas;
 
+import java.io.Serializable;
 import java.util.HashMap;
 
-public abstract class Figura {
+public abstract class Figura implements Serializable{
+    private static final long serialVersionUID = 6L;
 
     int base, altura;
 
