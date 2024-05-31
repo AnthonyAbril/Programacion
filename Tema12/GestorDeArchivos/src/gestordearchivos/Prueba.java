@@ -19,6 +19,10 @@ public class Prueba {
     private static final String RutaPorDefecto = "ficheros/";
     private static String ruta;
     
+    //RECORDATORIO: si en vez de strings quieres guardar instancas de clases debes serializarla
+    //poner esto en la cabecera: public class Clase implements Serializable{
+    //private static final long serialVersionUID = 6L;
+    
     private static ArrayList <String> plazaPlantSup = new ArrayList<>(); //20 plazas
     private static ArrayList <String> plazaPlantInf = new ArrayList<>(); //20 plazas
     private static ArrayList <String> plazareservada = new ArrayList<>(); //10 plazas
