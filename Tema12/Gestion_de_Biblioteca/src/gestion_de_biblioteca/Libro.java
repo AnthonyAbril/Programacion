@@ -41,7 +41,7 @@ public class Libro implements Serializable{
         this.prestado = true;
     }
     
-        public void PrestarLibro() {
+        public void DevolverLibro() {
         this.prestado = false;
     }
 

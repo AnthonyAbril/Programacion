@@ -7,7 +7,7 @@ class Usuario implements Serializable{
     private static final long serialVersionUID = 6L;
     String nombre;
     
-    public void Usuario(String nombre){
+    public Usuario(String nombre){
         this.nombre = nombre;
     }
     

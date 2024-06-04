@@ -82,7 +82,15 @@ public class Principal {
         }
         
         if(true){
-            Empleados.add(new Empleado());
+            Usuarios.add(new Usuario("Luis"));
+            Usuarios.add(new Usuario("Mauricio"));
+            Usuarios.add(new Usuario("Pablo"));
+        }
+        
+        if(true){
+            Empleados.add(new Empleado("German"));
+            Empleados.add(new Empleado("Fernando"));
+            Empleados.add(new Empleado("Enrique"));
         }
         
         Menu();
@@ -100,9 +108,8 @@ public class Principal {
                     + "\n\t5- Devolución de un libro por un usuario"
                     + "\n\t6- Gestión de empleados/as de la biblioteca"
                     + "\n\t7- Gestión de usuarios/as de la biblioteca"
-                    + "\n\t8- Salir del sistema."
-                    + "\n>Elige una opcion: ");
-            opcion = sc.nextInt();
+                    + "\n\t8- Salir del sistema.");
+            opcion = eligeopcion(1,8,"\n>Elige una opcion: ");
             sc.nextLine();
             
             switch (opcion) {
@@ -116,9 +123,16 @@ public class Principal {
                     BajaLibro();
                     break;
                 case 4:
-                    AlquilarLibro();
+                    AlquilarLibro();    //funcional
                     break;
                 case 5:
+                    DevolverLibro();    //funcional
+                    break;
+                case 6:
+                    GestionEmpleado();    //terminado
+                    break;
+                case 7:
+                    GestionUsuario();    //terminado
                     break;
                 default:
                     System.out.println("\n [ ELIGE UNA OPCION DEL MENU ]\n");
@@ -309,12 +323,13 @@ public class Principal {
         ArrayList <Libro> ListaEncontrados = new ArrayList<>();
         Libro elegido = null;
         
-        for(int a=0;a<libros.size();a++)
+        for(int a=0;a<libros.size();a++)//buscamos los libros prestados y los guardamos en ListaEncontrados
             if(!libros.get(a).isPrestado())
                 ListaEncontrados.add(libros.get(a));
         
         
         do{
+            LeerLista(ListaEncontrados);
             System.out.print(">Escribe el titulo del libro que quieres alquilar: ");
             String Pista = sc.nextLine();
             ArrayList <Libro> AEliminar = new ArrayList<>();
@@ -353,23 +368,194 @@ public class Principal {
             }
         }while(ListaEncontrados.size()!=1);
         
+        
         //Cuando se haya mostrado la búsqueda, preguntará el título del libro de los listados.
         String AlqTitulo = elegido.getTítulo();
         
         //Registrará el nombre de usuario que lo alquila (mostrando listado de usuarios y eligiendo sobre este listado) 
+        String AlqUserList="";
         for(int a=0;a<Usuarios.size();a++)
-            System.out.println("\n     [ Usuario nº"+(a+1)+" ]\n"+Usuarios.get(a).toString());
-        System.out.print(">Escribe el nombre de usuario que lo alquila: ");
-            String AlqUser = sc.nextLine();
+            AlqUserList=(AlqUserList+"\n     [ Usuario nº"+(a+1)+" ] - "+Usuarios.get(a).getNombre()+"\n");
+        int AlqUser = eligeopcion(1,Usuarios.size(),AlqUserList+">Introduce la posicion del usuario que lo alquila: ")-1;
         
         //y el empleado que lo entrega (mostrando listado de empleados y eligiendo sobre este listado)
+        String AlqEmplList="";
         for(int a=0;a<Empleados.size();a++)
-            System.out.println("\n     [ Usuario nº"+(a+1)+" ]\n"+Empleados.get(a).toString());
-        System.out.print(">Escribe el nombre del empleado que lo entrega: ");
-            String AlqEmpl = sc.nextLine();
+            AlqEmplList=(AlqEmplList+"\n     [ Empleado nº"+(a+1)+" ] - "+Empleados.get(a).getNombre()+"\n");
+        int AlqEmpl = eligeopcion(1,Empleados.size(),AlqEmplList+">Introduce la posicion del empleado que lo entrega: ")-1;
         
         //y modificará los atributos necesarios de ese libro para el funcionamiento correcto del programa de gestión.
         //PrestarLibro(AlqEmpl,AlqUser);
         
+        elegido.PrestarLibro(Empleados.get(AlqEmpl).nombre, Usuarios.get(AlqUser).nombre);
+    }
+
+    private static void DevolverLibro() {
+        //El sistema mostrará los libros NO alquilados. 
+        ArrayList <Libro> ListaEncontrados = new ArrayList<>();
+        Libro elegido = null;
+        
+        for(int a=0;a<libros.size();a++)//buscamos los libros prestados y los guardamos en ListaEncontrados
+            if(libros.get(a).isPrestado())
+                ListaEncontrados.add(libros.get(a));
+        
+        
+        do{
+            LeerLista(ListaEncontrados);
+            System.out.print(">Escribe el titulo del libro que quieres devolver: ");
+            String Pista = sc.nextLine();
+            ArrayList <Libro> AEliminar = new ArrayList<>();
+
+            for(int a=0;a<ListaEncontrados.size();a++){
+                elegido = ListaEncontrados.get(a);
+
+                if(!elegido.getTítulo().toLowerCase().contains(Pista.toLowerCase())){
+                    AEliminar.add(elegido);
+                }
+            }
+
+            for(int a=0;a<AEliminar.size();a++){
+                ListaEncontrados.remove(AEliminar.get(a));
+            }
+
+            LeerLista(ListaEncontrados);
+            
+        }while(ListaEncontrados.isEmpty());
+        
+        do{
+            System.out.print(">Escribe el isbn del libro: ");
+            String Pista = sc.nextLine();
+            ArrayList <Libro> AEliminar = new ArrayList<>();
+
+            for(int a=0;a<ListaEncontrados.size();a++){
+                elegido = ListaEncontrados.get(a);
+
+                if(!elegido.getISBN().toLowerCase().contains(Pista.toLowerCase())){
+                    AEliminar.add(elegido);
+                }
+            }
+
+            for(int a=0;a<AEliminar.size();a++){
+                ListaEncontrados.remove(AEliminar.get(a));
+            }
+        }while(ListaEncontrados.size()!=1);
+        
+        elegido.DevolverLibro();
+    }
+
+    private static void GestionEmpleado() {
+        //a. Listar empleados.
+        //b. Dar de alta nuevo empleado.
+        //c. Dar de baja un empleado existente.
+        //Indicará el empleado eliminado.
+        
+        int opcion;
+        do{
+            opcion = eligeopcion(1,4,"\n------ Gestion de empleados --------------------------"
+                    + "\n\t1- Listar empleados"   //base  hecha
+                    + "\n\t2- Dar de alta nuevo empleado"   //base  hecha
+                    + "\n\t3- Dar de baja un empleado existente"   //base  hecha
+                    + "\n\t4- Volver al menú."
+                    +"\n>Elige una opcion: ");
+            sc.nextLine();
+            
+            switch (opcion) {
+                case 1:
+                    ListaEmpleado();//hecho
+                    break;
+                case 2:
+                    AltaEmpleado();//hecho
+                    break;
+                case 3:
+                    BajaEmpleado();
+                    break;
+                default:
+                    System.out.println("\n [ ELIGE UNA OPCION DEL MENU ]\n");
+                    break;
+            }
+        }while(opcion!=4);
+    }
+    
+    public static void ListaEmpleado(){
+        if(!Empleados.isEmpty()){
+            for(int a=0;a<Empleados.size();a++){
+                System.out.print("\n     [ Empleado nº"+(a+1)+" ] - "+Empleados.get(a).getNombre()+"\n");
+            }
+        }else{
+            System.out.println(" [ NO HAY EMPLEADOS ] ");
+        }
+    }    
+    
+    public static void AltaEmpleado(){
+        System.out.print(">Introduzca el nombre del empleado: ");
+        Empleados.add(new Empleado(sc.nextLine()));
+    }    
+    
+    public static void BajaEmpleado(){
+        
+        if(!Empleados.isEmpty()){
+            ListaEmpleado();
+            System.out.println("Se ha eliminado al empleado "+Empleados.remove(eligeopcion(1,Empleados.size(),">Introduzca la posicion del empleado: ")-1).nombre);
+        }else{
+            System.out.println(" [ NO HAY EMPLEADOS ] ");
+        }
+    }
+    
+    private static void GestionUsuario() {
+        //a. Listar usuarios.
+        //b. Dar de alta nuevo usuario.
+        //c. Dar de baja un usuario existente.
+        //Indicará el usuario eliminado.
+        
+        int opcion;
+        do{
+            opcion = eligeopcion(1,4,"\n------ Gestion de usuario --------------------------"
+                    + "\n\t1- Listar usuario"   //base  hecha
+                    + "\n\t2- Dar de alta nuevo usuario"   //base  hecha
+                    + "\n\t3- Dar de baja un usuario existente"   //base  hecha
+                    + "\n\t4- Volver al menú."
+                    +"\n>Elige una opcion: ");
+            sc.nextLine();
+            
+            switch (opcion) {
+                case 1:
+                    ListaUsuario();//hecho
+                    break;
+                case 2:
+                    AltaUsuario();//hecho
+                    break;
+                case 3:
+                    BajaUsuario();
+                    break;
+                default:
+                    System.out.println("\n [ ELIGE UNA OPCION DEL MENU ]\n");
+                    break;
+            }
+        }while(opcion!=4);
+    }
+    
+    public static void ListaUsuario(){
+        if(!Usuarios.isEmpty()){
+            for(int a=0;a<Usuarios.size();a++){
+                System.out.print("\n     [ Usuario nº"+(a+1)+" ] - "+Usuarios.get(a).getNombre()+"\n");
+            }
+        }else{
+            System.out.println(" [ NO HAY USUARIOS ] ");
+        }
+    }    
+    
+    public static void AltaUsuario(){
+        System.out.print(">Introduzca el nombre del usuario: ");
+        Usuarios.add(new Usuario(sc.nextLine()));
+    }    
+    
+    public static void BajaUsuario(){
+        
+        if(!Usuarios.isEmpty()){
+            ListaUsuario();
+            System.out.println("\nSe ha eliminado al usuario "+Usuarios.remove(eligeopcion(1,Usuarios.size(),">Introduzca la posicion del usuario: ")-1).nombre);
+        }else{
+            System.out.println(" [ NO HAY USUARIOS ] ");
+        }
     }
 }

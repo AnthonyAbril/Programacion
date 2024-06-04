@@ -7,7 +7,7 @@ class Empleado implements Serializable{
     private static final long serialVersionUID = 6L;
     String nombre;
     
-    public void Empleado(String nombre){
+    public Empleado(String nombre){
         this.nombre = nombre;
     }
 
