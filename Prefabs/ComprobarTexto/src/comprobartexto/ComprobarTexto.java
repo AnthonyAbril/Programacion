@@ -32,4 +32,13 @@ public class ComprobarTexto {
         } while (esNumerico == false);
         return c;
     }
+    
+    public static String SoloTexto(String texto) {
+         String pista;
+        do {
+        System.out.print(texto);
+        pista = sc.nextLine();
+        } while (!pista.matches("[A-Za-z]*"));
+        return pista;
+    }
 }
