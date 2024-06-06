@@ -1,6 +1,13 @@
 
 package gestion_de_biblioteca;
 
+import java.io.EOFException;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -72,7 +79,11 @@ public class Principal {
     //- Colección libros: implementará una colección de objetos de tipo Libro con todos los campos
     //indicados anteriormente.
     private static ArrayList <Libro> libros = new ArrayList<>();
-
+    
+    private static File ficherobiblioteca;
+    private static final String RutaPorDefecto = "/home/alumnot/NetBeansProjects/Programacion/Tema12/Gestion_de_Biblioteca_ficheros";
+    private static String ruta;
+    
     public static void main(String[] args) {
         if(true){
             libros.add(new Libro("Arsene Lupin","Maurice Leblanc","Anaya","1234567890",3,14.99d));
@@ -93,9 +104,108 @@ public class Principal {
             Empleados.add(new Empleado("Enrique"));
         }
         
-        Menu();
+        try {
+            PreguntarRuta();
+
+            CargarListaEmpleados(ficherobiblioteca);
+
+            Menu();
+
+            GuardarListaEmpleados(ficherobiblioteca);
+        } catch (ClassNotFoundException ex) {
+            System.out.println(" [ NO SE HA ENCONTRADO LA CLASE ] ");
+        } catch (EOFException ex) {
+            System.out.println("");
+        }
     }
     
+    
+    public static void PreguntarRuta() {
+        System.out.print("Elige una ruta"
+                + "\n\t1-ruta por defecto"
+                + "\n\t2-escribir una ruta");
+        int opcion = eligeopcion(1, 2, "\n>Elige una opcion: ");
+
+        sc.nextLine();
+
+        if (opcion == 1) {//ruta por defecto
+            ruta = RutaPorDefecto;
+        } else {//ruta del usuario
+            System.out.print("Introduce la ruta de la carpeta contenedora del fichero: ");
+            ruta = sc.nextLine();
+        }
+
+        ficherobiblioteca = new File(ruta);
+        ficherobiblioteca.mkdirs();
+        ficherobiblioteca = new File(ruta + "/ficherofiguras.ddr");
+    }
+
+    
+    public static void CargarListaEmpleados(File archivo) throws ClassNotFoundException, EOFException {
+        try {
+            FileInputStream fis = new FileInputStream(archivo);
+            ObjectInputStream ois = new ObjectInputStream(fis);
+
+            //revisar si tienen informacion para preguntar si el usuario quiere usarla o no
+            if (archivo.exists() && archivo.length() > 0) {//si ya existe un fichero ahi y tiene contenido
+                System.out.print("ya hay un fichero con contenido en la ruta indicada"
+                        + "\n\t1-usar la informacion fichero"
+                        + "\n\t2-crear un nuevo fichero");
+                int opcion = eligeopcion(1, 2, "\n>Elige una opcion: ");
+
+                if (opcion == 1) {//lee la informacion fichero
+                    while (true) {
+                        libros = (ArrayList<Libro>) ois.readObject();
+                        Usuarios = (ArrayList<Usuario>) ois.readObject();
+                        Empleados = (ArrayList<Empleado>) ois.readObject();
+                    }
+                }
+            }
+
+        } catch (IOException ex) {
+            System.out.println(" - - Datos cargados - - ");
+        }
+    }
+    
+    
+    public static void GuardarListaEmpleados(File archivo) {
+        System.out.println("Quieres guardar?"
+                + "\n\t1-Si"
+                + "\n\t2-No");
+        if (eligeopcion(1, 2, ">Elige una opcion: ") == 1) {
+            try {
+                if (archivo.exists()) {
+                    FileOutputStream fos = new FileOutputStream(archivo, true);
+                    MiObjectOutputStream moos = new MiObjectOutputStream(fos);
+
+                    moos.writeObject(libros);
+                    moos.writeObject(Usuarios);
+                    moos.writeObject(Empleados);
+
+                    fos.close();
+                    moos.close();
+                } else {
+                    FileOutputStream fos = new FileOutputStream(archivo);
+                    ObjectOutputStream oos = new ObjectOutputStream(fos);
+
+                    oos.writeObject(libros);
+
+                    fos.close();
+                    oos.close();
+                }
+
+                System.out.println("\n - - Datos guardados - - ");
+                System.out.println("Se han guardado en: " + archivo);
+
+            } catch (IOException ex) {
+                System.out.println("Error al guardar los datos");
+            }
+        } else {
+            System.out.println("Programa finalizado sin guardar");
+        }
+    }
+
+
     public static void Menu(){
         int opcion=0;
         
@@ -120,7 +230,7 @@ public class Principal {
                     BuscarLibro(false);//hecho
                     break;
                 case 3:
-                    BajaLibro();
+                    BajaLibro();    //funcional
                     break;
                 case 4:
                     AlquilarLibro();    //funcional
@@ -140,6 +250,15 @@ public class Principal {
             }
         }while(opcion!=8);
     }
+    
+    public static void titulo(String texto) {
+        System.out.println("\n" + texto);
+        for (int a = 1; a <= texto.length(); a++) {
+            System.out.print("*");
+        }
+        System.out.println("");
+    }
+
     
     public static Libro BuscarObjeto(){
         int posicion;
@@ -350,7 +469,8 @@ public class Principal {
             
         }while(ListaEncontrados.isEmpty());
         
-        do{
+        if(ListaEncontrados.size()!=1){
+            do{
             System.out.print(">Escribe el isbn del libro: ");
             String Pista = sc.nextLine();
             ArrayList <Libro> AEliminar = new ArrayList<>();
@@ -367,6 +487,7 @@ public class Principal {
                 ListaEncontrados.remove(AEliminar.get(a));
             }
         }while(ListaEncontrados.size()!=1);
+        }
         
         
         //Cuando se haya mostrado la búsqueda, preguntará el título del libro de los listados.
@@ -374,12 +495,14 @@ public class Principal {
         
         //Registrará el nombre de usuario que lo alquila (mostrando listado de usuarios y eligiendo sobre este listado) 
         String AlqUserList="";
+        titulo("USUARIOS");
         for(int a=0;a<Usuarios.size();a++)
             AlqUserList=(AlqUserList+"\n     [ Usuario nº"+(a+1)+" ] - "+Usuarios.get(a).getNombre()+"\n");
         int AlqUser = eligeopcion(1,Usuarios.size(),AlqUserList+">Introduce la posicion del usuario que lo alquila: ")-1;
         
         //y el empleado que lo entrega (mostrando listado de empleados y eligiendo sobre este listado)
         String AlqEmplList="";
+        titulo("EMPLEADOS");
         for(int a=0;a<Empleados.size();a++)
             AlqEmplList=(AlqEmplList+"\n     [ Empleado nº"+(a+1)+" ] - "+Empleados.get(a).getNombre()+"\n");
         int AlqEmpl = eligeopcion(1,Empleados.size(),AlqEmplList+">Introduce la posicion del empleado que lo entrega: ")-1;
@@ -421,24 +544,25 @@ public class Principal {
             LeerLista(ListaEncontrados);
             
         }while(ListaEncontrados.isEmpty());
-        
-        do{
-            System.out.print(">Escribe el isbn del libro: ");
-            String Pista = sc.nextLine();
-            ArrayList <Libro> AEliminar = new ArrayList<>();
+        if(ListaEncontrados.size()!=1){
+            do{
+                System.out.print(">Escribe el isbn del libro: ");
+                String Pista = sc.nextLine();
+                ArrayList <Libro> AEliminar = new ArrayList<>();
 
-            for(int a=0;a<ListaEncontrados.size();a++){
-                elegido = ListaEncontrados.get(a);
+                for(int a=0;a<ListaEncontrados.size();a++){
+                    elegido = ListaEncontrados.get(a);
 
-                if(!elegido.getISBN().toLowerCase().contains(Pista.toLowerCase())){
-                    AEliminar.add(elegido);
+                    if(!elegido.getISBN().toLowerCase().contains(Pista.toLowerCase())){
+                        AEliminar.add(elegido);
+                    }
                 }
-            }
 
-            for(int a=0;a<AEliminar.size();a++){
-                ListaEncontrados.remove(AEliminar.get(a));
-            }
-        }while(ListaEncontrados.size()!=1);
+                for(int a=0;a<AEliminar.size();a++){
+                    ListaEncontrados.remove(AEliminar.get(a));
+                }
+            }while(ListaEncontrados.size()!=1);
+        }
         
         elegido.DevolverLibro();
     }
