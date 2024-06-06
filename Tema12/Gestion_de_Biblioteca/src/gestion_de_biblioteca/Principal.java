@@ -66,6 +66,15 @@ public class Principal {
         return opcion;
     }
 
+    public static String SoloTexto(String texto) {
+         String pista;
+        do {
+        System.out.print(texto);
+        pista = sc.nextLine();
+        } while (!pista.matches("[A-Za-z]*"));
+        return pista;
+    }
+    
     //- Colección empleados/as de la biblioteca: esta colección estará precargada por programa e
     //incluirá las siguientes personas: Alberto, Encarna, Estela, Manolo, Agustín. En la opción
     //correspondiente del menú se podrá gestionar el alta y baja de empleados.
@@ -85,20 +94,20 @@ public class Principal {
     private static String ruta;
     
     public static void main(String[] args) {
-        if(true){
+        if(false){
             libros.add(new Libro("Arsene Lupin","Maurice Leblanc","Anaya","1234567890",3,14.99d));
             libros.add(new Libro("Arsene Lupin","Maurice Leblanc","Anaya","12434567890",3,14.99d));
             libros.add(new Libro("Caballero Ladron","Maurice Leblanc","Anaya","12345657890",3,14.99d));
             libros.add(new Libro("DEMON SLAYER: KIMETSU NO YAIBA, VOLUMEN 2: 2","KOYOHARU GOTOUGE","Shonen Jump Manga","9781974700530",2    ,10.61d));
         }
         
-        if(true){
+        if(false){
             Usuarios.add(new Usuario("Luis"));
             Usuarios.add(new Usuario("Mauricio"));
             Usuarios.add(new Usuario("Pablo"));
         }
         
-        if(true){
+        if(false){
             Empleados.add(new Empleado("German"));
             Empleados.add(new Empleado("Fernando"));
             Empleados.add(new Empleado("Enrique"));
@@ -275,13 +284,9 @@ public class Principal {
     public static void AltaLibro(){
         //El sistema pedirá: título, autor, editorial, ubicación, ISBN, precio.
         //El sistema añadirá este libro en el conjunto de libros de la biblioteca.
-        
-        System.out.print(">Introduce el titulo del libro: ");
-        String titulo = sc.nextLine();
-        System.out.print(">Introduce el autor del libro: ");
-        String autor = sc.nextLine();
-        System.out.print(">Introduce la editorial del libro: ");
-        String editorial = sc.nextLine();
+        String titulo=SoloTexto(">Introduce el titulo del libro: ");
+        String autor=SoloTexto(">Introduce el autor del libro: ");
+        String editorial=SoloTexto(">Introduce la editorial del libro: ");
         System.out.print(">Introduce el ISBN del libro: ");
         String ISBN = sc.nextLine();
         int pasillo = solonumero(">Introduce la ubicación del libro (numero del pasillo): ");
